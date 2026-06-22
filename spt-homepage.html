@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPT – Sterile Processing Technician</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #f0fafa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow-x: hidden;
+}
+#bubble-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+.content-layer {
+  position: relative;
+  z-index: 2;
+  padding: 24px 20px 60px;
+}
+.content-layer a { pointer-events: all; }
+</style>
+</head>
+<body>
+
+<canvas id="bubble-canvas"></canvas>
+
+<div class="content-layer">
+<div style="width: 100%; margin-bottom: 24px;"><img style="width: 100%; height: auto; display: block; border-radius: 8px;" src="https://springboardedu.instructure.com/courses/157/files/10922/preview" alt="Hoot mascot" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/157/files/10922" data-api-returntype="File" /></div>
+<p><span style="font-size: 14pt;"><strong>Congratulations! </strong>You&rsquo;ve taken the first step toward a <span>fast-growing career in healthcare as a Sterile Processing Technician!</span><br /></span><br /><span style="font-size: 14pt;"><span>Sterile Processing </span>Technicians are in high demand, and this program was designed to help you build both competence and confidence as you enter the healthcare field with purpose. Whether you're switching careers or just starting out, you're in the right place.<br /></span><br /><span style="font-size: 14pt;">With Springboard, you&rsquo;ll learn online &mdash; but never alone. Throughout this journey, you&rsquo;ll be supported by a <span>Sterile Tech</span> mentor, a live instructor, a career coach, and a dedicated program advising team. We&rsquo;re here to help you succeed every step of the way.</span></p>
+<hr />
+<div style="max-width: 94%; margin: 40px auto; border-radius: 18px; overflow: hidden; background: #ffffff; border: 1px solid #0455f6;">
+    <div style="background: #DEEBFF; padding: 14px 24px;">
+        <h2 style="margin: 0; text-align: center;"><strong>Immediate Next Step</strong></h2>
+    </div>
+    <div style="padding: 40px 48px;">
+        <div style="text-align: center; margin-bottom: 22px;"><span style="font-size: 14pt;"> <strong> <span style="background: #F4FDEC; padding: 8px 18px; border-radius: 8px; display: inline-block;"> Please complete your Student Profile by end of day Wednesday, April 29. </span> </strong> </span></div>
+        <p style="margin: 0 0 32px 0; font-size: 14pt; line-height: 1.7; text-align: center;">We use your availability to match you with your mentor, so it&rsquo;s important that this is completed on time. This is a required onboarding step, and it helps us make sure you&rsquo;re set up and supported from the start of the program.</p>
+        <div style="text-align: center;"><strong> <a style="display: inline-block; background: linear-gradient(#d8ff9a 0%, #c3f570 50%, #a7e63f 100%); color: #000000; padding: 16px 44px; border-radius: 10px; text-decoration: none; font-size: 16pt; border: 1px solid #a7e63f;" href="https://springboardedu.typeform.com/to/UKa12mEa"> Complete Your Student Profile</a></strong></div>
+    </div>
+</div>
+<h2 style="margin: 0px 0px 7px; text-align: center;"><strong>Your Support System</strong></h2>
+<p style="font-size: 14pt; line-height: 1.6; max-width: 900px; margin: 0px auto 32px; text-align: center;">We know that managing a robust, self-paced learning program &mdash; while also juggling work and family responsibilities &mdash; can feel daunting. That&rsquo;s why we&rsquo;ve assembled a team of Springboarders to help you achieve your goals:</p>
+<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="min-width: 190px; padding: 14px 16px; background: #0455F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14pt; text-align: center; color: #ffffff;"><strong>Program Advisor</strong></div>
+        <div style="flex: 1 1 0%; padding: 16px; border-radius: 10px; background: #deebff; font-size: 14pt; text-align: center; border: 1px solid #0455f6;">Your go-to person for creating a study plan, setting goals, and navigating the program.</div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="min-width: 190px; padding: 14px 16px; background: #0455F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14pt; text-align: center; color: #ffffff;"><strong>Mentor</strong></div>
+        <div style="flex: 1 1 0%; padding: 16px; border-radius: 10px; background: #deebff; font-size: 14pt; text-align: center; border: 1px solid #0455f6;"><span>An experienced Sterile</span> Tech who helps you tackle the curriculum and transition into a <span>clinical environment</span>.</div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="min-width: 190px; padding: 14px 16px; background: #0455F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14pt; text-align: center; color: #ffffff;"><strong>Live Instructor</strong></div>
+        <div style="flex: 1 1 0%; padding: 16px; border-radius: 10px; background: #deebff; font-size: 14pt; text-align: center; border: 1px solid #0455f6;"><span>Hosts weekly live review sessions to discuss key concepts and share memorization strategies.<br /></span></div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="min-width: 190px; padding: 14px 16px; background: #0455F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14pt; text-align: center; color: #ffffff;"><strong>Placement<br />Advocate</strong></div>
+        <div style="flex: 1 1 0%; padding: 16px; border-radius: 10px; background: #deebff; font-size: 14pt; text-align: center; border: 1px solid #0455f6;">Helps you find your externship site and supports you as you complete your clinical hours.</div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: stretch;">
+        <div style="min-width: 190px; padding: 14px 16px; background: #0455F6; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14pt; text-align: center; color: #ffffff;"><strong>Career Coach</strong></div>
+        <div style="flex: 1 1 0%; padding: 16px; border-radius: 10px; background: #deebff; font-size: 14pt; text-align: center; border: 1px solid #0455f6;">Helps with r&eacute;sum&eacute; building, interview prep, networking, and job search strategy.</div>
+    </div>
+</div>
+<div style="border-radius: 20px; padding: 20px; background: #ffffff; margin: 60px 0px 12px; border: 2px solid #c3f570;">
+    <div style="background: #DCFBDA; border-radius: 14px; padding: 32px; text-align: center;">
+        <h2 style="margin-top: 0;"><strong>Quick Links</strong></h2>
+        <p style="font-size: 14pt; max-width: 700px; margin: 0 auto 24px;">Need to reference something quickly?<br />These resources will help you stay organized and supported.</p>
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;"><a style="display: inline-block; background: linear-gradient(180deg, #D8FF9A 0%, #C3F570 55%, #A7E63F 100%); color: #1c3b2f; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 14pt;" href="https://docs.google.com/document/d/17dnZImKTqIaqEhIH2lF5YRYPMWmhTEfV1TLC8TtEE6Y/edit?tab=t.0"><strong> Student Handbook</strong> </a> <a style="display: inline-block; background: linear-gradient(180deg, #D8FF9A 0%, #C3F570 55%, #A7E63F 100%); color: #1c3b2f; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-size: 14pt;" href="https://myhspa.org/certification/certification-overview/certified-registered-central-service-technician-crcst/"> <strong>CRCST Info </strong></a></div>
+    </div>
+</div>
+<div style="max-width: 1100px; margin: 60px auto;">
+    <div style="text-align: center; margin-bottom: -20px;">
+        <div style="display: inline-block; background: #DEEBFF; padding: 10px 28px; border-radius: 999px;"><strong><span style="font-size: 28.8px;">Get Started</span></strong></div>
+    </div>
+    <div style="border-radius: 20px; padding: 60px 20px 40px; border: 2px solid #deebff;">
+        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 6px;">
+            <div style="flex: 1; max-width: 700px; text-align: center; margin: 0 auto;">
+                <div style="max-width: 600px; margin: 0px auto; border-radius: 16px; overflow: hidden; background: #ffffff; border: 1px solid #1c717f;">
+                    <div style="background: linear-gradient(180deg, #D8FF9A 0%, #C3F570 55%, #A7E63F 100%); padding: 16px; font-size: 15pt; color: #1c3b2f;"><strong>Orientation Week</strong></div>
+                    <div style="padding: 24px; font-size: 14pt;"><strong> Complete your <a title="Orientation Week | Welcome!" href="https://springboardedu.instructure.com/courses/157/modules/1286" data-course-type="modules" data-published="false" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/157/modules/1286" data-api-returntype="Module">Orientation Week</a> module and <a title="Student Policy Acknowledgement" href="https://springboardedu.instructure.com/courses/157/assignments/2336" data-course-type="assignments" data-published="false" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/157/assignments/2336" data-api-returntype="Assignment">Policy Acknowledgement</a></strong>. Get an overview of what to expect in the course, complete your first tasks, and join a live orientation session.</div>
+                </div>
+            </div>
+            <div style="flex-shrink: 0; margin-left: -20px;"><img style="width: 300px; height: auto;" src="https://springboardedu.instructure.com/courses/157/files/10921/preview" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/157/files/10921" data-api-returntype="File" /></div>
+        </div>
+    </div>
+</div>
+<div style="border-radius: 16px; padding: 20px 32px 28px; margin-bottom: 4px;">
+    <h2 style="margin: 0px 0px 8px; text-align: center;"><strong>Your Journey Ahead</strong></h2>
+    <p style="font-size: 14pt; margin: 0px; text-align: center;">You&rsquo;ll complete 3 phases of this program:</p>
+</div>
+<div style="display: flex; gap: 18px; align-items: stretch; flex-wrap: nowrap;">
+    <div style="flex: 1; display: flex; gap: 18px;">
+        <div style="flex: 1 1 0%; background: #deebff; border-radius: 14px; padding: 20px; border: 1px solid #d4f3f5;"><span style="display: inline-block; background: #c3f570; color: #000000; font-size: 12pt; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;"> <strong>Phase 1</strong> </span>
+            <h3 style="margin: 0 0 10px;"><strong>Core Curriculum</strong></h3>
+            <p style="margin: 0; font-size: 14pt;">Complete our 12-week core curriculum (aligned to HSPA&rsquo;s CRCST exam). Then, you&rsquo;ll head into Study Weeks before taking the CRCST exam.</p>
+        </div>
+        <div style="flex: 1 1 0%; background: #deebff; border-radius: 14px; padding: 20px; border: 1px solid #d4f3f5;"><span style="display: inline-block; background: #c3f570; color: #000000; font-size: 12pt; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;"> <strong>Phase 2</strong> </span>
+            <h3 style="margin: 0 0 10px;"><strong>Exam Prep and Pass</strong></h3>
+            <p style="margin: 0; font-size: 14pt;">Head into Study Weeks, when you'll complete practice exams and review material, before sitting for the real CRCST exam.</p>
+        </div>
+        <div style="flex: 1 1 0%; background: #deebff; border-radius: 14px; padding: 20px; border: 1px solid #d4f3f5;"><span style="display: inline-block; background: #c3f570; color: #000000; font-size: 12pt; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;"> <strong>Phase 3</strong> </span>
+            <h3 style="margin: 0 0 10px;"><strong>Hands-On Training to Full Certification</strong></h3>
+            <p style="margin: 0; font-size: 14pt;">Secure a full-time, paid training role in a healthcare setting. After you pass the CRCST exam and complete 400 training hours, you&rsquo;ll be eligible for certification.</p>
+        </div>
+    </div>
+    <div style="flex: 0 0 220px; display: flex; align-items: center; justify-content: center;"><img style="max-width: 100%; height: auto;" src="https://springboardedu.instructure.com/courses/157/files/10933/download" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/157/files/10933" data-api-returntype="File" /></div>
+</div>
+<p>&nbsp;</p>
+</div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('bubble-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let mx = -9999, my = -9999;
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  const BUBBLE_COUNT = 42;
+  const bubbles = [];
+
+  function makeBubble(forceBottom) {
+    const r = 8 + Math.random() * 18;
+    return {
+      x: Math.random() * W,
+      y: forceBottom ? H + r + Math.random() * H * 0.4 : Math.random() * H,
+      r,
+      vy: -(0.25 + Math.random() * 0.4),
+      vx: (Math.random() - 0.5) * 0.16,
+      wobble: Math.random() * Math.PI * 2,
+      alpha: 0.5 + Math.random() * 0.3,
+      popping: false, popT: 0, dead: false
+    };
+  }
+  for (let i = 0; i < BUBBLE_COUNT; i++) bubbles.push(makeBubble(false));
+
+  function popBubble(b) { if (!b.popping && !b.dead) { b.popping = true; b.popT = 0; } }
+
+  // Hover pop
+  window.addEventListener('mousemove', () => {
+    bubbles.forEach(b => {
+      if (b.popping || b.dead) return;
+      if (Math.hypot(mx - b.x, my - b.y) < b.r + 3) popBubble(b);
+    });
+  });
+
+  // Click burst — random nearby bubbles pop + sparkles
+  window.addEventListener('click', e => {
+    const cx = e.clientX, cy = e.clientY, burstRadius = 120;
+    bubbles.forEach(b => {
+      if (b.popping || b.dead) return;
+      const d = Math.hypot(cx - b.x, cy - b.y);
+      if (d < burstRadius && Math.random() < (1 - d / burstRadius) * 0.9) {
+        setTimeout(() => popBubble(b), Math.random() * 120);
+      }
+    });
+    for (let i = 0; i < 5; i++) {
+      const r = 4 + Math.random() * 6;
+      bubbles.push({
+        x: cx + (Math.random() - 0.5) * 30,
+        y: cy + (Math.random() - 0.5) * 30,
+        r, vy: -(0.4 + Math.random() * 0.6), vx: (Math.random() - 0.5) * 0.4,
+        wobble: Math.random() * Math.PI * 2, alpha: 0.7,
+        popping: false, popT: 0, dead: false
+      });
+    }
+  });
+
+  function drawShape(x, y, r) {
+    const grd = ctx.createRadialGradient(x - r*0.28, y - r*0.28, r*0.05, x, y, r);
+    grd.addColorStop(0,    'rgba(255,255,255,0.95)');
+    grd.addColorStop(0.35, 'rgba(220,248,248,0.72)');
+    grd.addColorStop(0.72, 'rgba(100,210,210,0.42)');
+    grd.addColorStop(1,    'rgba(28,113,127,0.28)');
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fillStyle = grd; ctx.fill();
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(28,160,160,0.26)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(x - r*0.28, y - r*0.28, r*0.22, r*0.13, -Math.PI/5, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.62)'; ctx.fill();
+  }
+
+  function drawBubble(b, t) {
+    if (b.dead) return;
+    if (b.popping) {
+      b.popT += 0.08;
+      const scale = 1 + b.popT * 0.9;
+      const alpha = Math.max(0, b.alpha * (1 - b.popT * 1.1));
+      if (alpha <= 0) { b.dead = true; return; }
+      ctx.save(); ctx.globalAlpha = alpha; drawShape(b.x, b.y, b.r * scale); ctx.restore();
+      return;
+    }
+    const wx = b.x + Math.sin(t * 0.6 + b.wobble) * 4;
+    ctx.save(); ctx.globalAlpha = b.alpha; drawShape(wx, b.y, b.r); ctx.restore();
+  }
+
+  function loop(ts) {
+    requestAnimationFrame(loop);
+    const t = ts * 0.001;
+    ctx.clearRect(0, 0, W, H);
+    for (let i = bubbles.length - 1; i >= 0; i--) {
+      const b = bubbles[i];
+      if (b.dead) {
+        if (bubbles.length > BUBBLE_COUNT) { bubbles.splice(i, 1); continue; }
+        bubbles[i] = makeBubble(true); continue;
+      }
+      if (!b.popping) {
+        b.y += b.vy; b.x += b.vx;
+        if (b.x < -b.r)  b.x = W + b.r;
+        if (b.x > W+b.r) b.x = -b.r;
+        if (b.y < -b.r * 2) {
+          if (bubbles.length > BUBBLE_COUNT) { bubbles.splice(i, 1); continue; }
+          bubbles[i] = makeBubble(true); continue;
+        }
+      }
+      drawBubble(b, t);
+    }
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
