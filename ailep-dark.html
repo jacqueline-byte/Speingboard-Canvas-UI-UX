@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AILEP – AI Literacy, Ethics & Productivity</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #05082B;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow-x: hidden;
+  color: #ffffff;
+}
+
+/* Node network behind everything */
+#node-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+/* Glow trail layer */
+#glow-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.layer {
+  position: relative;
+  z-index: 2;
+  padding: 8px 16px 40px;
+}
+
+/* ── BANNER ── */
+.banner { width: 100%; margin: 16px 0 28px; }
+.banner img {
+  width: 100%; height: auto; display: block;
+  border-radius: 12px;
+  border: 1px solid rgba(0,255,255,0.18);
+}
+
+/* ── INTRO ── */
+.intro p {
+  font-size: 16pt;
+  line-height: 1.85;
+  color: #d7e3f7;
+  margin-bottom: 18px;
+}
+
+/* ── SECTION TITLES ── */
+.sec-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 48px 0 24px;
+  color: #C3F570;
+}
+.sec-title.cyan { color: #00FFFF; }
+.sec-title.teal { color: #7BFFFB; }
+
+/* ── WHAT YOU'LL LEARN — 3 cards ── */
+.learn-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 56px;
+}
+.learn-card {
+  flex: 1 1 260px;
+  min-width: 0;
+  background: linear-gradient(135deg, #1a2a6e 0%, #0d1145 40%, #05082b 100%);
+  border: 1.5px solid rgba(0,255,255,0.22);
+  border-radius: 12px;
+  padding: 26px 22px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+.learn-card:hover {
+  border-color: rgba(0,255,255,0.55);
+  transform: translateY(-4px);
+}
+.learn-card h3 {
+  color: #7bfffb;
+  font-size: 18pt;
+  margin-bottom: 10px;
+}
+.learn-card p {
+  font-size: 15pt;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+/* ── HOW YOU'LL LEARN ── */
+.how-wrap {
+  background: rgba(0,130,147,0.10);
+  border: 1px solid rgba(0,255,255,0.18);
+  border-radius: 16px;
+  padding: 26px 22px;
+  margin-bottom: 56px;
+}
+.how-row {
+  background: rgba(5,8,43,0.6);
+  border: 1px solid rgba(0,255,255,0.12);
+  border-left: 5px solid #008293;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.how-row:last-child { margin-bottom: 0; }
+.how-icon {
+  width: 60px; flex-shrink: 0;
+  display: flex; justify-content: center;
+}
+.how-icon img { height: 50px; width: auto; }
+.how-row h4 {
+  color: #7bfffb;
+  font-size: 18pt;
+  margin-bottom: 4px;
+}
+.how-row p {
+  font-size: 15pt;
+  color: #d7e3f7;
+  line-height: 1.5;
+}
+
+/* ── SUPPORT SYSTEM ── */
+.support {
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a2a6e 0%, #0d1145 40%, #05082b 100%);
+  border: 1px solid rgba(0,255,255,0.2);
+  padding: 38px 36px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+.support-left { flex: 1 1 240px; min-width: 0; }
+.support-left h3 {
+  font-size: 24pt;
+  color: #ffffff;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.support-left h3 span { color: #00ffff; }
+.support-left p {
+  font-size: 17pt;
+  color: #ffffff;
+  line-height: 1.6;
+  font-weight: bold;
+}
+.support-card {
+  flex: 1 1 300px;
+  min-width: 0;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 28px;
+  background: linear-gradient(135deg, #008293 0%, #006b78 100%);
+  border: 1px solid rgba(0,255,255,0.25);
+}
+.support-card strong.role {
+  color: #7bfffb;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18pt;
+}
+.support-card p {
+  margin-bottom: 24px;
+  font-size: 16pt;
+  color: #e6fbfa;
+  line-height: 1.6;
+}
+.support-btn {
+  display: inline-block;
+  background: #05082B;
+  color: #ffffff;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14pt;
+  font-weight: bold;
+  border: 1px solid rgba(0,255,255,0.3);
+}
+.support-btn:hover { background: #0a0f3d; }
+
+/* ── GETTING STARTED ── */
+.gs-pill-wrap { text-align: center; margin-bottom: -18px; position: relative; z-index: 3; }
+.gs-pill {
+  display: inline-block;
+  background: #d946ef;
+  padding: 2px;
+  border-radius: 999px;
+}
+.gs-pill-inner {
+  background: #05082B;
+  padding: 8px 32px;
+  border-radius: 999px;
+  font-size: 24pt;
+  color: #ffffff;
+  font-weight: 700;
+}
+.gs-box {
+  border-radius: 16px;
+  border: 3px solid #d946ef;
+  background: rgba(5,8,43,0.7);
+  padding: 50px 28px 32px;
+  margin-bottom: 56px;
+}
+.gs-steps {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.gs-step {
+  flex: 1 1 220px;
+  min-width: 0;
+  background: linear-gradient(135deg, rgba(217,70,239,0.18), rgba(5,8,43,0.5));
+  border: 1.5px solid rgba(217,70,239,0.35);
+  border-radius: 12px;
+  padding: 24px;
+}
+.gs-step .step-num {
+  color: #f5d0fe;
+  font-size: 18pt;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 10px;
+}
+.gs-step p {
+  font-size: 15pt;
+  line-height: 1.65;
+  color: #ffffff;
+}
+.gs-step a {
+  color: #f0abfc;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* ── JOURNEY AHEAD ── */
+.journey-sub {
+  text-align: center;
+  font-size: 17pt;
+  color: #d7e3f7;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  line-height: 1.5;
+}
+.phase-card {
+  background: rgba(5,8,43,0.6);
+  border: 1px solid rgba(195,245,112,0.18);
+  border-left: 5px solid #c3f570;
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.phase-icon {
+  width: 70px; flex-shrink: 0;
+  display: flex; justify-content: center;
+}
+.phase-icon img { height: 60px; width: auto; }
+.phase-badge {
+  display: inline-block;
+  background: #C3F570;
+  color: #05082b;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11pt;
+  font-weight: 700;
+}
+.phase-card h4 {
+  margin: 8px 0 6px;
+  font-size: 18pt;
+  color: #c3f570;
+}
+.phase-card p {
+  font-size: 15pt;
+  line-height: 1.6;
+  color: #d7e3f7;
+}
+
+@media (max-width: 640px) {
+  .learn-grid, .gs-steps, .support { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="node-canvas"></canvas>
+<canvas id="glow-canvas"></canvas>
+
+<div class="layer">
+
+  <!-- BANNER -->
+  <div class="banner">
+    <img src="https://springboardedu.instructure.com/courses/140/files/11032/preview" alt="AI course visual banner" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/140/files/11032" data-api-returntype="File" />
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <p>In this course, you&rsquo;ll build a practical foundation for working confidently with today&rsquo;s leading AI tools. You&rsquo;ll gain a clear understanding of how large language models (LLMs) work, where they add value, where human judgment matters, and how to use them responsibly in real workflows.</p>
+    <p>Each week, you&rsquo;ll move through lesson videos, hands-on demos, and guided exercises designed to help you apply AI to the work you already do. You&rsquo;ll explore ethical decision-making, experiment with tools, and design prompts and workflows that deliver reliable results.</p>
+    <p>By the end of the program, you&rsquo;ll complete a final project that shows where AI can support your goals and how to carry these skills into your everyday work.</p>
+  </div>
+
+  <!-- WHAT YOU'LL LEARN -->
+  <p class="sec-title">What You&rsquo;ll Learn</p>
+  <div class="learn-grid">
+    <div class="learn-card">
+      <h3>Responsible AI Use</h3>
+      <p>Learn core principles for safe and ethical AI use, including data privacy, bias, and how to avoid common risks in real-world workflows.</p>
+    </div>
+    <div class="learn-card">
+      <h3>Productivity Workflows</h3>
+      <p>Use AI to streamline tasks and support better decisions, from research and drafting to analysis and refinement.</p>
+    </div>
+    <div class="learn-card">
+      <h3>Prompting Foundations</h3>
+      <p>Build strong prompting habits using simple, repeatable frameworks for clearer and more dependable results.</p>
+    </div>
+  </div>
+
+  <!-- HOW YOU'LL LEARN -->
+  <p class="sec-title teal">How You&rsquo;ll Learn</p>
+  <div class="how-wrap">
+    <div class="how-row">
+      <div class="how-icon"><img src="https://springboardedu.instructure.com/courses/168/files/14578/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14578" data-api-returntype="File" /></div>
+      <div>
+        <h4>Learn at your own pace</h4>
+        <p>Each week includes short, focused videos that walk you through key AI concepts&mdash;from understanding tools to applying them in real scenarios.</p>
+      </div>
+    </div>
+    <div class="how-row">
+      <div class="how-icon"><img src="https://springboardedu.instructure.com/courses/168/files/14579/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14579" data-api-returntype="File" /></div>
+      <div>
+        <h4>Join live sessions</h4>
+        <p>Join <strong>six (6), 60-min live sessions </strong>with AI experts to see concepts in action and get your questions answered. See course calendar for session times and dates.&nbsp;</p>
+      </div>
+    </div>
+    <div class="how-row">
+      <div class="how-icon"><img src="https://springboardedu.instructure.com/courses/168/files/14580/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14580" data-api-returntype="File" /></div>
+      <div>
+        <h4>Reflect and apply</h4>
+        <p>Wrap up each week with a guided reflection activity to reinforce what you&rsquo;ve learned and track your progress as you build your skills.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORT SYSTEM -->
+  <div class="support">
+    <div class="support-left">
+      <h3>Your <span>Support System</span></h3>
+      <p>You&rsquo;ll learn online, but never on your own. Your support team is always within reach.</p>
+    </div>
+    <div class="support-card">
+      <strong class="role">Program Advisor</strong>
+      <p>Your primary contact for scheduling, course navigation, and program logistics.</p>
+      <a class="support-btn" href="mailto:advising@springboard.com" target="_blank" rel="noopener">Contact Your Program Advisor</a>
+    </div>
+  </div>
+
+  <!-- GETTING STARTED -->
+  <div class="gs-pill-wrap">
+    <span class="gs-pill"><span class="gs-pill-inner">Getting Started</span></span>
+  </div>
+  <div class="gs-box">
+    <div class="gs-steps">
+      <div class="gs-step">
+        <span class="step-num">Step 1</span>
+        <p>Explore the <a href="https://springboardedu.instructure.com/courses/139/modules/846" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/139/modules/846" data-api-returntype="Module">Orientation Module</a> to understand how the course is structured and what to expect each week.</p>
+      </div>
+      <div class="gs-step">
+        <span class="step-num">Step 2</span>
+        <p>Set up the AI tools you will want to build in and experiment with in this course (based on what you can access on your computer).&nbsp;</p>
+      </div>
+      <div class="gs-step">
+        <span class="step-num">Step 3</span>
+        <p>Set up a simple workspace for notes, prompts, and exercises you&rsquo;ll build on throughout the program.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOURNEY AHEAD -->
+  <p class="sec-title teal">Your Journey Ahead</p>
+  <p class="journey-sub">Here&rsquo;s what you&rsquo;ll be building, practicing, and applying along the way:</p>
+
+  <div class="phase-card">
+    <div class="phase-icon"><img src="https://springboardedu.instructure.com/courses/168/files/14587/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14587" data-api-returntype="File" /></div>
+    <div>
+      <span class="phase-badge">Phase 1</span>
+      <h4>Foundations of AI Literacy</h4>
+      <p>Learn how modern AI tools work, where they add value, and where caution is needed. Understand key concepts, strengths, limitations, and how to assess outputs.</p>
+    </div>
+  </div>
+
+  <div class="phase-card">
+    <div class="phase-icon"><img style="height:68px;width:51px;" src="https://springboardedu.instructure.com/courses/168/files/14585/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14585" data-api-returntype="File" /></div>
+    <div>
+      <span class="phase-badge">Phase 2</span>
+      <h4>Ethical &amp; Responsible AI Use</h4>
+      <p>Apply ethical frameworks to real scenarios. Practice identifying risks like bias, privacy, and over-reliance while learning to use AI thoughtfully and responsibly.</p>
+    </div>
+  </div>
+
+  <div class="phase-card">
+    <div class="phase-icon"><img src="https://springboardedu.instructure.com/courses/168/files/14586/download?download_frd=1" data-api-endpoint="https://springboardedu.instructure.com/api/v1/courses/168/files/14586" data-api-returntype="File" /></div>
+    <div>
+      <span class="phase-badge">Phase 3</span>
+      <h4>Applied AI Skills</h4>
+      <p>Put your learning into action. Practice effective prompting, test workflows, and apply AI to real use cases as you prepare for Project Week.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// NODE NETWORK
+// ═══════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('node-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', () => { resize(); build(); });
+  resize();
+
+  let mx = -9999, my = -9999;
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  const COUNT = 70;
+  const LINK_DIST = 150;
+  const MOUSE_DIST = 200;
+
+  function build() {
+    nodes = [];
+    for (let i = 0; i < COUNT; i++) {
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.8 + 1
+      });
+    }
+  }
+  build();
+
+  function draw() {
+    requestAnimationFrame(draw);
+    ctx.clearRect(0, 0, W, H);
+
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    // links node-to-node
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < LINK_DIST) {
+          ctx.strokeStyle = 'rgba(0,255,255,' + (1 - d / LINK_DIST) * 0.18 + ')';
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+    }
+
+    // links to mouse
+    nodes.forEach(n => {
+      const d = Math.hypot(n.x - mx, n.y - my);
+      if (d < MOUSE_DIST) {
+        ctx.strokeStyle = 'rgba(195,245,112,' + (1 - d / MOUSE_DIST) * 0.5 + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y); ctx.lineTo(mx, my); ctx.stroke();
+      }
+    });
+
+    // nodes
+    nodes.forEach(n => {
+      const d = Math.hypot(n.x - mx, n.y - my);
+      const glow = d < MOUSE_DIST ? (1 - d / MOUSE_DIST) : 0;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + glow * 2, 0, Math.PI * 2);
+      ctx.fillStyle = glow > 0.2
+        ? 'rgba(195,245,112,' + (0.5 + glow * 0.5) + ')'
+        : 'rgba(0,255,255,0.5)';
+      ctx.fill();
+    });
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════
+// GLOW CURSOR TRAIL
+// ═══════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('glow-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const trail = [];
+  const MAX = 22;
+
+  window.addEventListener('mousemove', e => {
+    trail.push({ x: e.clientX, y: e.clientY, life: 1 });
+    if (trail.length > MAX) trail.shift();
+  });
+
+  function draw() {
+    requestAnimationFrame(draw);
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < trail.length; i++) {
+      const t = trail[i];
+      t.life -= 0.045;
+      if (t.life <= 0) continue;
+      const radius = 26 * t.life;
+      const g = ctx.createRadialGradient(t.x, t.y, 0, t.x, t.y, radius);
+      g.addColorStop(0, 'rgba(0,255,255,' + (0.28 * t.life) + ')');
+      g.addColorStop(0.5, 'rgba(123,255,251,' + (0.14 * t.life) + ')');
+      g.addColorStop(1, 'rgba(0,255,255,0)');
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+    // bright core at newest point
+    if (trail.length) {
+      const head = trail[trail.length - 1];
+      const g = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 10);
+      g.addColorStop(0, 'rgba(195,245,112,0.55)');
+      g.addColorStop(1, 'rgba(195,245,112,0)');
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, 10, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
