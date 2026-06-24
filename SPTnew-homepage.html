@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sterile Processing Technician — Certification Program</title>
+<style>
+/* ============================================================
+   RESET / FULL-BLEED  (no margins — fills the page/iframe)
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;width:100%;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;cursor:pointer;border:none;background:none;}
+
+:root{
+  --navy:#071A2E;
+  --navy-deep:#04111F;
+  --navy-2:#0A2236;
+  --teal:#00B7A8;
+  --cyan:#4FFBF9;
+  --text:#EAF4F6;
+  --muted:#9FB6C0;
+  --glass:rgba(255,255,255,.055);
+  --glass-2:rgba(255,255,255,.09);
+  --border:rgba(127,238,251,.14);
+  --border-2:rgba(127,238,251,.28);
+  --ring:0 0 0 3px rgba(79,251,249,.55);
+  --maxw:1200px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--navy-deep);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ============================================================
+   GLOBAL ATMOSPHERE  (mesh gradient + drifting orbs)
+   ============================================================ */
+.bg-atmosphere{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(1200px 800px at 78% -8%, rgba(0,183,168,.18), transparent 60%),
+    radial-gradient(900px 700px at 8% 12%, rgba(79,251,249,.10), transparent 55%),
+    linear-gradient(180deg,var(--navy) 0%, var(--navy-deep) 60%, #030C16 100%);
+}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;mix-blend-mode:screen;animation:drift 26s var(--ease) infinite alternate;}
+.orb.a{width:540px;height:540px;top:-160px;right:-120px;background:radial-gradient(circle,rgba(0,183,168,.6),transparent 70%);}
+.orb.b{width:460px;height:460px;bottom:-180px;left:-140px;background:radial-gradient(circle,rgba(79,251,249,.35),transparent 70%);animation-duration:32s;}
+.orb.c{width:380px;height:380px;top:40%;left:55%;background:radial-gradient(circle,rgba(0,183,168,.28),transparent 70%);animation-duration:38s;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(40px,60px) scale(1.12);}}
+
+/* moving light ray */
+.ray{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 38%,rgba(79,251,249,.05) 50%,transparent 62%);
+  background-size:300% 300%;animation:sweep 14s linear infinite;}
+@keyframes sweep{0%{background-position:0% 0%;}100%{background-position:200% 200%;}}
+
+.shell{position:relative;z-index:2;}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:.4s var(--ease);}
+.nav-inner{
+  max-width:var(--maxw);margin:0 auto;padding:18px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.nav.scrolled{background:rgba(4,17,31,.72);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.2px;}
+.brand .mark{
+  width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--teal),var(--cyan));
+  box-shadow:0 0 18px rgba(0,183,168,.5);
+}
+.brand .mark svg{width:19px;height:19px;}
+.brand small{display:block;font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.4px;}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:14.5px;color:var(--muted);transition:.25s;position:relative;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;
+  background:linear-gradient(90deg,var(--teal),var(--cyan));transition:.3s var(--ease);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;color:var(--navy-deep);
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  box-shadow:0 6px 22px rgba(0,183,168,.35);transition:.3s var(--ease);
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(79,251,249,.5);}
+.nav-toggle{display:none;color:var(--text);}
+
+/* ============================================================
+   LAYOUT HELPERS
+   ============================================================ */
+.section{position:relative;padding:110px 28px;}
+.wrap{max-width:var(--maxw);margin:0 auto;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;
+  letter-spacing:1.6px;text-transform:uppercase;color:var(--cyan);
+  padding:7px 14px;border-radius:999px;background:var(--glass);
+  border:1px solid var(--border);margin-bottom:20px;
+}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);animation:pulse 2.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+h1,h2,h3{line-height:1.12;letter-spacing:-.02em;margin:0;}
+.section-head{max-width:640px;margin:0 auto 64px;text-align:center;}
+.section-head h2{font-size:clamp(28px,4.2vw,46px);font-weight:700;}
+.section-head p{color:var(--muted);font-size:17px;margin-top:16px;}
+.grad-text{background:linear-gradient(120deg,#fff 10%,var(--cyan) 55%,var(--teal) 95%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 28px 90px;position:relative;}
+#neural{position:absolute;inset:0;z-index:1;width:100%;height:100%;}
+.hero .wrap{position:relative;z-index:3;width:100%;
+  display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;}
+.hero-copy{max-width:600px;}
+.hero h1{font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-.03em;}
+.hero h1 .line{display:block;}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--muted);margin:24px 0 36px;max-width:520px;}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:13px;
+  font-weight:600;font-size:15.5px;transition:.3s var(--ease);position:relative;overflow:hidden;}
+.btn:focus-visible{outline:none;box-shadow:var(--ring);}
+.btn-primary{color:var(--navy-deep);background:linear-gradient(135deg,var(--cyan),var(--teal));
+  box-shadow:0 8px 30px rgba(0,183,168,.4);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(79,251,249,.55);}
+.btn-primary::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);
+  transform:translateX(-130%);transition:.6s var(--ease);}
+.btn-primary:hover::after{transform:translateX(130%);}
+.btn-ghost{color:var(--text);background:var(--glass);border:1px solid var(--border-2);
+  backdrop-filter:blur(10px);}
+.btn-ghost:hover{background:var(--glass-2);transform:translateY(-3px);border-color:var(--cyan);
+  box-shadow:0 0 26px rgba(79,251,249,.25);}
+.hero-trust{display:flex;gap:26px;margin-top:42px;flex-wrap:wrap;}
+.hero-trust .ti{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted);}
+.hero-trust .ti svg{width:17px;height:17px;color:var(--teal);flex:none;}
+
+/* hero orbital visual */
+.hero-visual{position:relative;height:480px;display:grid;place-items:center;}
+.orbit-core{
+  width:150px;height:150px;border-radius:28px;display:grid;place-items:center;
+  background:linear-gradient(150deg,rgba(0,183,168,.22),rgba(79,251,249,.08));
+  border:1px solid var(--border-2);backdrop-filter:blur(14px);
+  box-shadow:0 0 60px rgba(0,183,168,.35),inset 0 0 40px rgba(79,251,249,.1);
+  position:relative;z-index:4;animation:floaty 6s ease-in-out infinite;
+}
+.orbit-core svg{width:62px;height:62px;color:var(--cyan);filter:drop-shadow(0 0 14px rgba(79,251,249,.6));}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.ring{position:absolute;border:1px solid var(--border);border-radius:50%;
+  top:50%;left:50%;transform:translate(-50%,-50%);}
+.ring.r1{width:250px;height:250px;animation:spin 22s linear infinite;}
+.ring.r2{width:360px;height:360px;border-style:dashed;border-color:rgba(0,183,168,.2);
+  animation:spin 34s linear infinite reverse;}
+.ring.r3{width:470px;height:470px;border-color:rgba(79,251,249,.08);animation:spin 50s linear infinite;}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.sat{position:absolute;top:50%;left:50%;width:52px;height:52px;border-radius:14px;
+  display:grid;place-items:center;background:var(--glass-2);border:1px solid var(--border-2);
+  backdrop-filter:blur(10px);box-shadow:0 0 24px rgba(0,183,168,.3);}
+.sat svg{width:25px;height:25px;color:var(--cyan);}
+.sat.s1{transform:translate(-50%,-50%) translate(125px,0);animation:floaty 5s ease-in-out infinite;}
+.sat.s2{transform:translate(-50%,-50%) translate(-180px,30px);animation:floaty 5.6s .4s ease-in-out infinite;}
+.sat.s3{transform:translate(-50%,-50%) translate(60px,-185px);animation:floaty 6.2s .8s ease-in-out infinite;}
+.sat.s4{transform:translate(-50%,-50%) translate(-90px,170px);animation:floaty 5.2s .2s ease-in-out infinite;}
+
+/* ============================================================
+   JOURNEY  (animated illuminated pathway)
+   ============================================================ */
+.journey-track{position:relative;max-width:920px;margin:0 auto;padding-left:8px;}
+.journey-line{position:absolute;left:38px;top:14px;bottom:14px;width:3px;border-radius:3px;
+  background:rgba(255,255,255,.08);overflow:hidden;}
+.journey-line::after{content:"";position:absolute;inset:0;transform-origin:top;transform:scaleY(var(--p,0));
+  background:linear-gradient(180deg,var(--cyan),var(--teal));
+  box-shadow:0 0 18px rgba(0,183,168,.6);transition:transform .15s linear;}
+.milestone{position:relative;display:grid;grid-template-columns:78px 1fr;gap:18px;
+  padding:18px 0;align-items:flex-start;}
+.node{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;flex:none;
+  background:var(--glass);border:1px solid var(--border);position:relative;z-index:2;
+  transition:.4s var(--ease);color:var(--muted);}
+.node svg{width:27px;height:27px;}
+.node .num{position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;
+  font-size:12px;font-weight:700;display:grid;place-items:center;color:var(--navy-deep);
+  background:linear-gradient(135deg,var(--cyan),var(--teal));box-shadow:0 0 12px rgba(0,183,168,.5);}
+.milestone-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;
+  padding:22px 26px;transition:.4s var(--ease);backdrop-filter:blur(8px);}
+.milestone:hover .node,.milestone:focus-within .node{color:var(--cyan);border-color:var(--cyan);
+  box-shadow:0 0 30px rgba(79,251,249,.45);transform:scale(1.06);background:var(--glass-2);}
+.milestone:hover .milestone-card,.milestone:focus-within .milestone-card{
+  border-color:var(--border-2);background:var(--glass-2);transform:translateX(6px);
+  box-shadow:0 14px 40px rgba(0,0,0,.3);}
+.milestone-card h3{font-size:20px;font-weight:700;margin-bottom:8px;}
+.milestone-card .tag{font-size:12px;font-weight:600;letter-spacing:.6px;color:var(--cyan);
+  text-transform:uppercase;}
+.milestone-card p{color:var(--muted);font-size:15px;margin:6px 0 0;}
+
+/* ============================================================
+   COURSE EXPERIENCE (tilt glass cards)
+   ============================================================ */
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.tilt{position:relative;border-radius:20px;padding:30px;background:var(--glass);
+  border:1px solid var(--border);backdrop-filter:blur(10px);overflow:hidden;
+  transform-style:preserve-3d;transition:transform .12s var(--ease),box-shadow .4s var(--ease),border-color .4s;}
+.tilt::before{content:"";position:absolute;inset:0;border-radius:20px;padding:1px;opacity:0;
+  background:linear-gradient(135deg,var(--cyan),transparent 40%,transparent 60%,var(--teal));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;transition:opacity .4s;}
+.tilt::after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(79,251,249,.18),transparent 70%);
+  left:var(--mx,50%);top:var(--my,50%);transform:translate(-50%,-50%);opacity:0;transition:opacity .4s;pointer-events:none;}
+.tilt:hover{box-shadow:0 26px 60px rgba(0,0,0,.4);border-color:var(--border-2);}
+.tilt:hover::before,.tilt:hover::after{opacity:1;}
+.tilt .ic{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;margin-bottom:20px;
+  background:linear-gradient(135deg,rgba(0,183,168,.25),rgba(79,251,249,.08));
+  border:1px solid var(--border-2);color:var(--cyan);transform:translateZ(40px);}
+.tilt .ic svg{width:26px;height:26px;}
+.tilt h3{font-size:20px;font-weight:700;margin-bottom:10px;transform:translateZ(30px);}
+.tilt p{color:var(--muted);font-size:15px;transform:translateZ(20px);}
+.tilt .reveal-more{margin-top:16px;font-size:14px;font-weight:600;color:var(--cyan);
+  max-height:0;opacity:0;overflow:hidden;transition:.45s var(--ease);transform:translateZ(20px);}
+.tilt:hover .reveal-more{max-height:60px;opacity:1;}
+
+/* ============================================================
+   OUTCOMES (counters)
+   ============================================================ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.stat{position:relative;text-align:center;padding:38px 22px;border-radius:20px;
+  background:var(--glass);border:1px solid var(--border);backdrop-filter:blur(10px);
+  transition:.4s var(--ease);overflow:hidden;}
+.stat::after{content:"";position:absolute;inset:auto 0 0 0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.6;}
+.stat:hover{transform:translateY(-8px);border-color:var(--border-2);
+  box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 30px rgba(0,183,168,.18);}
+.stat .num{font-size:clamp(38px,5vw,54px);font-weight:800;letter-spacing:-.03em;line-height:1;
+  background:linear-gradient(120deg,#fff,var(--cyan));-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent;}
+.stat .lbl{margin-top:12px;color:var(--muted);font-size:14.5px;}
+
+/* ============================================================
+   FEATURES (bento)
+   ============================================================ */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:20px;}
+.cell{position:relative;border-radius:20px;padding:28px;overflow:hidden;
+  background:var(--glass);border:1px solid var(--border);backdrop-filter:blur(10px);
+  transition:.4s var(--ease);display:flex;flex-direction:column;justify-content:space-between;}
+.cell::after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;
+  left:var(--mx,80%);top:var(--my,20%);transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(0,183,168,.22),transparent 70%);opacity:0;transition:opacity .4s;pointer-events:none;}
+.cell:hover{border-color:var(--border-2);transform:translateY(-5px);box-shadow:0 22px 50px rgba(0,0,0,.35);}
+.cell:hover::after{opacity:1;}
+.cell .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:var(--cyan);
+  background:linear-gradient(135deg,rgba(0,183,168,.22),rgba(79,251,249,.06));border:1px solid var(--border-2);}
+.cell .ic svg{width:23px;height:23px;}
+.cell h3{font-size:18.5px;font-weight:700;margin-bottom:6px;}
+.cell p{color:var(--muted);font-size:14.5px;}
+.cell.wide{grid-column:span 2;}
+.cell.tall{grid-row:span 2;}
+.cell.feature{grid-column:span 2;grid-row:span 2;justify-content:flex-end;
+  background:linear-gradient(150deg,rgba(0,183,168,.16),rgba(79,251,249,.05));}
+.cell.feature h3{font-size:26px;}
+.cell.feature .big-ic{position:absolute;top:24px;right:24px;width:90px;height:90px;color:var(--cyan);opacity:.5;}
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.cta-band{position:relative;text-align:center;border-radius:28px;padding:72px 32px;overflow:hidden;
+  background:linear-gradient(150deg,rgba(0,183,168,.2),rgba(79,251,249,.06));
+  border:1px solid var(--border-2);backdrop-filter:blur(12px);
+  box-shadow:0 30px 80px rgba(0,0,0,.4),inset 0 0 80px rgba(0,183,168,.08);}
+.cta-band h2{font-size:clamp(28px,4.5vw,46px);font-weight:800;max-width:680px;margin:0 auto 16px;}
+.cta-band p{color:var(--muted);font-size:18px;max-width:560px;margin:0 auto 34px;}
+.cta-band .hero-cta{justify-content:center;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:48px 28px 40px;}
+.footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.footer .brand small{color:var(--muted);}
+.footer-links{display:flex;gap:26px;flex-wrap:wrap;}
+.footer-links a{color:var(--muted);font-size:14px;transition:.25s;}
+.footer-links a:hover{color:var(--cyan);}
+.footer .copy{width:100%;text-align:center;color:rgba(159,182,192,.5);font-size:13px;
+  margin-top:14px;padding-top:22px;border-top:1px solid rgba(255,255,255,.05);}
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s var(--ease),transform .8s var(--ease);}
+.reveal.in{opacity:1;transform:none;}
+.reveal.d1{transition-delay:.08s;}
+.reveal.d2{transition-delay:.16s;}
+.reveal.d3{transition-delay:.24s;}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:980px){
+  .hero .wrap{grid-template-columns:1fr;gap:30px;}
+  .hero-visual{height:360px;order:-1;}
+  .exp-grid{grid-template-columns:1fr 1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .bento{grid-template-columns:1fr 1fr;grid-auto-rows:180px;}
+  .cell.feature{grid-column:span 2;}
+  .ring.r3{display:none;}
+}
+@media(max-width:680px){
+  .nav-links{position:fixed;inset:64px 14px auto 14px;flex-direction:column;gap:6px;
+    background:rgba(4,17,31,.96);backdrop-filter:blur(20px);border:1px solid var(--border);
+    border-radius:16px;padding:16px;transform:translateY(-12px) scale(.98);opacity:0;
+    pointer-events:none;transition:.3s var(--ease);align-items:stretch;}
+  .nav-links.open{transform:none;opacity:1;pointer-events:auto;}
+  .nav-links a{padding:10px 8px;font-size:16px;}
+  .nav-links .nav-cta{text-align:center;}
+  .nav-toggle{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;
+    background:var(--glass);border:1px solid var(--border);}
+  .section{padding:78px 18px;}
+  .hero{padding:120px 18px 70px;}
+  .exp-grid,.stat-grid,.bento{grid-template-columns:1fr;}
+  .bento{grid-auto-rows:auto;}
+  .cell{min-height:150px;}
+  .cell.wide,.cell.tall,.cell.feature{grid-column:span 1;grid-row:span 1;}
+  .footer .wrap{flex-direction:column;text-align:center;}
+  .hero-visual{height:300px;}
+  .ring.r2{display:none;}
+}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.001s!important;scroll-behavior:auto!important;}
+  .reveal{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ATMOSPHERE ============ -->
+<div class="bg-atmosphere" aria-hidden="true">
+  <span class="orb a"></span><span class="orb b"></span><span class="orb c"></span>
+</div>
+<div class="ray" aria-hidden="true"></div>
+
+<div class="shell">
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Sterile Processing Technician program home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04111F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4" fill="#04111F" stroke="none"/></svg>
+      </span>
+      <span>Springboard<small>Sterile Processing · CRCST</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#journey">Journey</a>
+      <a href="#experience">Experience</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#features">Support</a>
+      <a class="nav-cta" href="#enroll">Get Started</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" width="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <canvas id="neural" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow reveal"><span class="dot"></span>Healthcare Certification · 100% Online</span>
+      <h1 class="reveal d1">
+        <span class="line">Become a certified</span>
+        <span class="line grad-text">Sterile Processing</span>
+        <span class="line">Technician.</span>
+      </h1>
+      <p class="hero-sub reveal d2">A guided, mentor-supported path to the CRCST credential — built for career-changers and first-time healthcare professionals. Learn online, never alone.</p>
+      <div class="hero-cta reveal d3">
+        <a class="btn btn-primary" href="#enroll">
+          Start your profile
+          <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#journey">
+          <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg>
+          Explore the journey
+        </a>
+      </div>
+      <div class="hero-trust reveal d3">
+        <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Aligned to HSPA's CRCST exam</span>
+        <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>1:1 Sterile Tech mentor</span>
+        <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Paid hands-on training</span>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal d2" aria-hidden="true">
+      <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+      <div class="orbit-core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg>
+      </div>
+      <span class="sat s1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12h6M12 9v6"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg></span>
+      <span class="sat s2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12h4l2 5 4-12 2 7h6"/></svg></span>
+      <span class="sat s3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8-8 10-4.6-2-8-5-8-10V6z"/></svg></span>
+      <span class="sat s4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section class="section" id="journey">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Your Path</span>
+      <h2 class="grad-text">A journey designed around you</h2>
+      <p>Three connected phases take you from day one to a recognized credential and a paid role in a healthcare setting.</p>
+    </div>
+
+    <div class="journey-track" id="journeyTrack">
+      <div class="journey-line" id="journeyLine"></div>
+
+      <div class="milestone reveal" tabindex="0">
+        <div class="node"><span class="num">1</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="milestone-card">
+          <span class="tag">Phase 1 · Weeks 1–12</span>
+          <h3>Core Curriculum</h3>
+          <p>Complete a 12-week core curriculum aligned to HSPA's CRCST exam, with weekly live review sessions and a dedicated instructor.</p>
+        </div>
+      </div>
+
+      <div class="milestone reveal d1" tabindex="0">
+        <div class="node"><span class="num">2</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="milestone-card">
+          <span class="tag">Phase 2 · Study Weeks</span>
+          <h3>Exam Prep &amp; Pass</h3>
+          <p>Move into focused Study Weeks with practice exams and targeted review, then sit for the official CRCST exam with confidence.</p>
+        </div>
+      </div>
+
+      <div class="milestone reveal d2" tabindex="0">
+        <div class="node"><span class="num">3</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="milestone-card">
+          <span class="tag">Phase 3 · Certification</span>
+          <h3>Hands-On Training to Full Certification</h3>
+          <p>Secure a full-time, paid training role. After passing the exam and completing 400 training hours, you're eligible for certification.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section class="section" id="experience">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>The Experience</span>
+      <h2 class="grad-text">Learning that adapts to your life</h2>
+      <p>Self-paced material, real human support, and tools built to keep you moving forward.</p>
+    </div>
+    <div class="exp-grid" id="expGrid">
+      <article class="tilt reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+        <h3>Self-paced curriculum</h3>
+        <p>Structured modules you can fit around work and family, with clear weekly goals to keep your pace on track.</p>
+        <span class="reveal-more">Designed for busy, working learners →</span>
+      </article>
+      <article class="tilt reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Live instructor sessions</h3>
+        <p>Weekly live reviews unpack key concepts and share memorization strategies for the toughest material.</p>
+        <span class="reveal-more">Ask questions in real time →</span>
+      </article>
+      <article class="tilt reveal d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/></svg></div>
+        <h3>1:1 mentor matching</h3>
+        <p>An experienced Sterile Tech mentor helps you tackle the curriculum and transition into a real clinical environment.</p>
+        <span class="reveal-more">Matched to your availability →</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OUTCOMES ============ -->
+<section class="section" id="outcomes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>By the Numbers</span>
+      <h2 class="grad-text">Built for real outcomes</h2>
+      <p>A complete system — curriculum, coaching, and placement support — engineered to get you certified and working.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal"><div class="num" data-count="12" data-suffix="">0</div><div class="lbl">Week core curriculum</div></div>
+      <div class="stat reveal d1"><div class="num" data-count="400" data-suffix="">0</div><div class="lbl">Hands-on training hours</div></div>
+      <div class="stat reveal d2"><div class="num" data-count="5" data-suffix="">0</div><div class="lbl">Dedicated support roles</div></div>
+      <div class="stat reveal d3"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">Online, flexible learning</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES (BENTO) ============ -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span>Your Support System</span>
+      <h2 class="grad-text">A team behind every step</h2>
+      <p>You're supported by a full team of Springboarders, each focused on a different part of your success.</p>
+    </div>
+    <div class="bento" id="bento">
+      <article class="cell feature reveal">
+        <svg class="big-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M3 20h2M9 4l11 0M3 4h2"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div>
+          <h3>Program Advisor</h3>
+          <p>Your go-to person for building a study plan, setting goals, and navigating the program from start to finish.</p>
+        </div>
+      </article>
+      <article class="cell reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/></svg></div>
+        <h3>Mentor</h3>
+        <p>An experienced Sterile Tech guiding your clinical transition.</p>
+      </article>
+      <article class="cell reveal d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+        <h3>Live Instructor</h3>
+        <p>Weekly review sessions on key concepts and strategy.</p>
+      </article>
+      <article class="cell wide reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>Placement Advocate</h3>
+        <p>Helps you find your externship site and supports you through your clinical training hours.</p>
+      </article>
+      <article class="cell reveal d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+        <h3>Career Coach</h3>
+        <p>Résumé building, interview prep, and job-search strategy.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="section" id="enroll">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <span class="eyebrow"><span class="dot"></span>Immediate Next Step</span>
+      <h2 class="grad-text">Your healthcare career starts here</h2>
+      <p>Complete your Student Profile to get matched with your mentor and set up for success from day one.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#enroll">
+          Complete your Student Profile
+          <svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#journey">View the program</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#04111F" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v20M2 12h20"/></svg></span>
+      <span>Springboard<small>Sterile Processing Technician Program</small></span>
+    </a>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="#journey">Journey</a>
+      <a href="#experience">Experience</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#features">Support</a>
+      <a href="#enroll">Get Started</a>
+    </nav>
+    <p class="copy">© <span id="year"></span> Springboard Education · Aligned to the HSPA CRCST credential. Online learning, real human support.</p>
+  </div>
+</footer>
+
+</div><!-- /shell -->
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Year ---------- */
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ---------- Nav scroll state + mobile toggle ---------- */
+  var nav = document.getElementById("nav");
+  var onScroll = function(){ nav.classList.toggle("scrolled", window.scrollY > 30); };
+  onScroll(); window.addEventListener("scroll", onScroll, {passive:true});
+
+  var toggle = document.getElementById("navToggle"), links = document.getElementById("navLinks");
+  toggle.addEventListener("click", function(){
+    var open = links.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open);
+  });
+  links.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){ links.classList.remove("open"); toggle.setAttribute("aria-expanded","false"); }
+  });
+
+  /* ---------- Reveal on scroll ---------- */
+  var revealEls = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !reduced){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, {threshold:.16, rootMargin:"0px 0px -8% 0px"});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* ---------- Animated counters ---------- */
+  var counters = document.querySelectorAll(".num[data-count]");
+  var runCount = function(el){
+    var target = parseFloat(el.getAttribute("data-count"));
+    var suffix = el.getAttribute("data-suffix") || "";
+    if(reduced){ el.textContent = target + suffix; return; }
+    var start = performance.now(), dur = 1400;
+    var step = function(now){
+      var p = Math.min((now - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  if("IntersectionObserver" in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ runCount(en.target); cio.unobserve(en.target); } });
+    }, {threshold:.6});
+    counters.forEach(function(c){ cio.observe(c); });
+  } else { counters.forEach(runCount); }
+
+  /* ---------- Journey line fill on scroll ---------- */
+  var track = document.getElementById("journeyTrack"), line = document.getElementById("journeyLine");
+  if(track && line){
+    var fillLine = function(){
+      var r = track.getBoundingClientRect(), vh = window.innerHeight;
+      var p = (vh * 0.72 - r.top) / r.height;
+      p = Math.max(0, Math.min(1, p));
+      line.style.setProperty("--p", reduced ? 1 : p);
+    };
+    fillLine(); window.addEventListener("scroll", fillLine, {passive:true});
+    window.addEventListener("resize", fillLine);
+  }
+
+  /* ---------- Parallax atmosphere ---------- */
+  if(!reduced){
+    var orbs = document.querySelectorAll(".orb");
+    window.addEventListener("scroll", function(){
+      var y = window.scrollY;
+      orbs.forEach(function(o,i){ o.style.transform = "translateY(" + (y * (0.04 + i*0.02)) + "px)"; });
+    }, {passive:true});
+  }
+
+  /* ---------- 3D tilt + glow follow (cards & bento) ---------- */
+  if(!reduced && window.matchMedia("(hover:hover)").matches){
+    document.querySelectorAll(".tilt").forEach(function(card){
+      card.addEventListener("mousemove", function(e){
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        card.style.transform = "perspective(900px) rotateY(" + ((px-.5)*10) + "deg) rotateX(" + ((.5-py)*10) + "deg) translateY(-4px)";
+        card.style.setProperty("--mx", (px*100)+"%");
+        card.style.setProperty("--my", (py*100)+"%");
+      });
+      card.addEventListener("mouseleave", function(){ card.style.transform = ""; });
+    });
+    document.querySelectorAll(".cell").forEach(function(cell){
+      cell.addEventListener("mousemove", function(e){
+        var r = cell.getBoundingClientRect();
+        cell.style.setProperty("--mx", ((e.clientX-r.left)/r.width*100)+"%");
+        cell.style.setProperty("--my", ((e.clientY-r.top)/r.height*100)+"%");
+      });
+    });
+  }
+
+  /* ---------- Neural particle network (hero) ---------- */
+  (function(){
+    var canvas = document.getElementById("neural");
+    if(!canvas || reduced) return;
+    var ctx = canvas.getContext("2d");
+    var w, h, dpr, particles = [], mouse = {x:-9999, y:-9999};
+
+    function size(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var rect = canvas.getBoundingClientRect();
+      w = rect.width; h = rect.height;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      var area = w * h;
+      var count = Math.max(28, Math.min(78, Math.round(area / 16000)));
+      particles = [];
+      for(var i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w, y: Math.random()*h,
+          vx: (Math.random()-.5)*0.32, vy: (Math.random()-.5)*0.32,
+          r: Math.random()*1.8 + 1.1
+        });
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      for(var i=0;i<particles.length;i++){
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > w) p.vx *= -1;
+        if(p.y < 0 || p.y > h) p.vy *= -1;
+
+        // cursor influence
+        var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+        var md = Math.sqrt(mdx*mdx + mdy*mdy);
+        if(md < 130){
+          p.x += (mdx/md) * (130-md) * 0.012;
+          p.y += (mdy/md) * (130-md) * 0.012;
+        }
+
+        // links
+        for(var j=i+1;j<particles.length;j++){
+          var q = particles[j];
+          var dx = p.x-q.x, dy = p.y-q.y, dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < 132){
+            var a = (1 - dist/132) * 0.5;
+            ctx.strokeStyle = "rgba(79,251,249," + a + ")";
+            ctx.lineWidth = 0.7;
+            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
+          }
+        }
+        // node
+        var near = md < 130;
+        ctx.beginPath();
+        ctx.fillStyle = near ? "rgba(79,251,249,.95)" : "rgba(0,183,168,.75)";
+        ctx.shadowBlur = near ? 14 : 6;
+        ctx.shadowColor = "rgba(79,251,249,.7)";
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    var heroEl = document.getElementById("top");
+    heroEl.addEventListener("mousemove", function(e){
+      var rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top;
+    });
+    heroEl.addEventListener("mouseleave", function(){ mouse.x = -9999; mouse.y = -9999; });
+
+    var ro = ("ResizeObserver" in window) ? new ResizeObserver(size) : null;
+    if(ro) ro.observe(canvas); else window.addEventListener("resize", size);
+    size(); draw();
+  })();
+
+})();
+</script>
+</body>
+</html>
