@@ -287,6 +287,7 @@ const VB = {w:600, h:470};   // svg viewBox (both boards)
 const $ = s => document.querySelector(s);
 const done = {chest:false, limb:false};
 function go(view){
+  endDrag(false); clearGhosts();
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on", v.id===view));
   document.querySelectorAll(".step").forEach(b=>b.classList.toggle("on", b.dataset.go===view));
   window.scrollTo({top:0,behavior:"smooth"});
@@ -351,6 +352,7 @@ function chipEl(l){
 
 function setup(kind){
   const set=SETS[kind], board=$(`#${kind}Board`), tray=$(`#${kind}Tray`);
+  endDrag(false); clearGhosts();
   state[kind].clear(); done[kind]=false; selected=null;
   board.querySelectorAll(".target").forEach(t=>t.remove());
   tray.innerHTML=""; $(`#${kind}List`).innerHTML=""; $(`#${kind}Next`).hidden=true;
@@ -423,37 +425,54 @@ function selectChip(c){
   selected=c; if(c) c.classList.add("sel");
 }
 
-/* drag with pointer events (mouse + touch), tap-to-select fallback */
+/* drag with pointer events (mouse + touch), tap-to-select fallback.
+   One drag at a time, tracked on the whole window so the ghost is ALWAYS cleaned up —
+   even if the pointer is released outside the frame or the browser cancels the drag. */
+let drag=null;  // {kind, chip, ghost, hot, x, y, moved, id}
+
+function endDrag(place){
+  if(!drag) return;
+  const d=drag; drag=null;
+  if(d.ghost) d.ghost.remove();
+  d.chip.style.opacity="";
+  if(d.hot) d.hot.classList.remove("hot");
+  if(place){
+    if(d.moved){ if(d.hot) tryPlace(d.kind, d.chip, d.hot); }
+    else selectChip(selected===d.chip?null:d.chip);
+  }
+  clearGhosts();
+}
+function clearGhosts(){ document.querySelectorAll(".chip.drag").forEach(g=>g.remove()); }
+
 function wireChip(kind, chip){
-  let start=null, ghost=null, hot=null;
   chip.addEventListener("pointerdown", e=>{
-    e.preventDefault(); chip.setPointerCapture(e.pointerId);
-    start={x:e.clientX,y:e.clientY,moved:false};
+    if(e.button!==undefined && e.button>0) return;
+    e.preventDefault();
+    endDrag(false);                       // never allow two drags at once
+    drag={kind, chip, ghost:null, hot:null, x:e.clientX, y:e.clientY, moved:false, id:e.pointerId};
   });
-  chip.addEventListener("pointermove", e=>{
-    if(!start) return;
-    if(!start.moved && Math.hypot(e.clientX-start.x,e.clientY-start.y)<6) return;
-    if(!start.moved){ start.moved=true; ghost=chip.cloneNode(true); ghost.classList.add("drag"); document.body.appendChild(ghost); chip.style.opacity=".25"; }
-    ghost.style.left=(e.clientX-24)+"px"; ghost.style.top=(e.clientY-24)+"px";
-    const t=targetAt(kind,e.clientX,e.clientY);
-    if(t!==hot){ hot&&hot.classList.remove("hot"); hot=t; hot&&hot.classList.add("hot"); }
-  });
-  const end=e=>{
-    if(!start) return;
-    if(start.moved){
-      ghost.remove(); chip.style.opacity="";
-      hot&&hot.classList.remove("hot");
-      if(hot) tryPlace(kind, chip, hot);
-      hot=null;
-    } else {
-      selectChip(selected===chip?null:chip);
-    }
-    start=null;
-  };
-  chip.addEventListener("pointerup", end);
-  chip.addEventListener("pointercancel", e=>{ if(ghost) ghost.remove(); chip.style.opacity=""; start=null; });
   chip.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectChip(chip); } });
 }
+
+window.addEventListener("pointermove", e=>{
+  if(!drag || e.pointerId!==drag.id) return;
+  if(!drag.moved){
+    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6) return;
+    drag.moved=true;
+    drag.ghost=drag.chip.cloneNode(true);
+    drag.ghost.classList.remove("sel","shake"); drag.ghost.classList.add("drag");
+    document.body.appendChild(drag.ghost);
+    drag.chip.style.opacity=".25";
+  }
+  drag.ghost.style.left=(e.clientX-24)+"px"; drag.ghost.style.top=(e.clientY-24)+"px";
+  const t=targetAt(drag.kind,e.clientX,e.clientY);
+  if(t!==drag.hot){ drag.hot&&drag.hot.classList.remove("hot"); drag.hot=t; t&&t.classList.add("hot"); }
+});
+window.addEventListener("pointerup", e=>{ if(drag && e.pointerId===drag.id) endDrag(true); });
+window.addEventListener("pointercancel", ()=>endDrag(false));
+window.addEventListener("blur", ()=>endDrag(false));                 // focus left the frame/tab
+document.addEventListener("mouseleave", ()=>endDrag(false));        // pointer left the iframe
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden) endDrag(false); });
 
 function targetAt(kind,x,y){
   let best=null, bd=Infinity;
