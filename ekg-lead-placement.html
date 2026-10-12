@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trick for Remembering Lead Placement for EKG/ECG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0455F6; --blue75:#DEEBFF; --purple:#7E43D0; --purple50:#F0E6FF;
+    --leaf:#C3F570; --leaf100:#DCFBDA; --leaf50:#F4FDEC; --gray:#D7D7DC; --navy:#0B2540;
+    /* lead colors (subject matter, not decoration) */
+    --l-red:#E03A3A; --l-yellow:#F5D90A; --l-green:#3DAA4A; --l-blue:#1F6FD6; --l-orange:#F08A1C; --l-purple:#8E3FB8; --l-white:#FFFFFF; --l-black:#111418;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:"Manrope","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--navy);background:var(--blue75);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  button{font:inherit;cursor:pointer;border:0}
+  button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+  sub{font-size:.7em}
+
+  /* soft moving backdrop */
+  .world{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:drift 16s ease-in-out infinite alternate}
+  .b1{width:420px;height:420px;background:var(--blue);opacity:.22;left:-120px;top:-120px}
+  .b2{width:380px;height:380px;background:var(--leaf);right:-100px;bottom:-120px;animation-duration:20s}
+  .b3{width:340px;height:340px;background:var(--purple);opacity:.25;right:20%;top:-160px;animation-direction:alternate-reverse}
+  @keyframes drift{from{transform:translate(-20px,10px)}to{transform:translate(30px,-20px)}}
+
+  .app{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:16px 18px 18px}
+  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+  h1{margin:0;font-size:clamp(20px,2.8vw,28px);font-weight:800;letter-spacing:-.015em;line-height:1.15}
+  .steps{display:flex;gap:6px;flex-wrap:wrap}
+  .step{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.7);color:var(--blue);font-weight:700;font-size:14px;transition:all .2s}
+  .step:hover{background:#fff}
+  .step.on{background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9);color:#fff}
+  .step .tick{display:inline-block;width:16px;height:16px;border-radius:50%;background:var(--leaf);color:var(--navy);font-size:11px;line-height:16px;text-align:center;margin-left:6px;vertical-align:1px;transform:scale(0);transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+  .step.done .tick{transform:scale(1)}
+
+  .view{display:none;margin-top:14px;animation:in .45s cubic-bezier(.2,.8,.2,1)}
+  .view.on{display:block}
+  @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .panel{position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(255,255,255,.76));box-shadow:0 24px 50px -30px rgba(4,85,246,.45),inset 0 0 0 1px rgba(255,255,255,.9);padding:20px 22px}
+  .panel.facets::before{content:"";position:absolute;inset:0;pointer-events:none;background:
+     linear-gradient(115deg,transparent 0 66%,rgba(255,255,255,.95) 66% 66.3%,rgba(222,235,255,.45) 66.3%),
+     linear-gradient(62deg,transparent 0 80%,rgba(255,255,255,.95) 80% 80.3%,rgba(240,230,255,.5) 80.3%)}
+  .panel > *{position:relative}
+  .intro{margin:0 0 14px;font-size:16px;line-height:1.5}
+  .kicker{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--navy);background:var(--leaf);padding:3px 10px;border-radius:999px;margin-bottom:8px}
+  h2{margin:0 0 4px;font-size:20px;font-weight:800}
+  .sub{margin:0 0 12px;font-size:14px;opacity:.75}
+
+  /* ---- mnemonic ---- */
+  .learn-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+  .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 12px}
+  .tile{perspective:800px;height:118px;background:none;padding:0}
+  .tile .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,1.35,.45,1)}
+  .tile.flip .in{transform:rotateY(180deg)}
+  .tile .f,.tile .b{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+  .tile .f{background:#fff;box-shadow:inset 0 0 0 1px var(--gray)}
+  .tile .f .dot{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;box-shadow:0 6px 14px -6px rgba(0,0,0,.35)}
+  .tile .f small{font-size:11px;font-weight:700;opacity:.55}
+  .tile .b{transform:rotateY(180deg);color:#fff;padding:6px;text-align:center}
+  .tile .b strong{font-size:15px;line-height:1.1}
+  .tile .b span{font-size:12px;font-weight:700;opacity:.9}
+  .phrase{font-size:16px;font-weight:700;margin:2px 0}
+  .phrase b{color:var(--blue)}
+  .acro{display:inline-block;margin-top:6px;font-size:22px;font-weight:800;letter-spacing:.12em}
+  .colors{font-size:15px;margin:0}
+  .limbs{display:grid;gap:10px;margin-top:10px}
+  .pair{display:flex;align-items:center;gap:14px;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:inset 0 0 0 1px var(--gray)}
+  .stack{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .ld{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
+  .pair p{margin:0;font-size:16px;font-weight:700;line-height:1.35}
+  .pair p span{display:block;font-size:14px;font-weight:600;opacity:.75}
+  .notes{margin-top:14px;border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,#3A78FA 0%,var(--blue) 50%,var(--purple) 130%);color:#fff;font-size:15px;line-height:1.5}
+  .notes em{font-weight:700}
+
+  /* ---- placement boards ---- */
+  .place{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+  .board{position:relative;border-radius:20px;background:#fff;box-shadow:inset 0 0 0 1px var(--gray);overflow:hidden;touch-action:none}
+  .board svg{display:block;width:100%;height:auto}
+  .target{position:absolute;width:7.2%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:2.5px dashed rgba(4,85,246,.55);background:rgba(222,235,255,.55);transition:all .2s}
+  .target.limb{width:9%}
+  .target.hot{border-color:var(--purple);background:rgba(240,230,255,.9);transform:translate(-50%,-50%) scale(1.15)}
+  .target.ok{border:0;background:none}
+  .target .chip{position:absolute;inset:0;width:100%;height:100%;font-size:clamp(11px,1.5vw,15px);animation:snap .45s cubic-bezier(.3,1.6,.5,1)}
+  @keyframes snap{from{transform:scale(1.5)}to{transform:none}}
+  .side{display:flex;flex-direction:column;gap:12px}
+  .tray{display:flex;flex-wrap:wrap;gap:10px;min-height:56px;padding:12px;border-radius:18px;background:rgba(255,255,255,.75)}
+  .chip{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff;cursor:grab;user-select:none;touch-action:none;box-shadow:0 8px 16px -8px rgba(0,0,0,.45);transition:transform .15s}
+  .chip:hover{transform:translateY(-2px)}
+  .chip.sel{outline:3px solid var(--blue);outline-offset:3px}
+  .chip.drag{position:fixed;z-index:50;pointer-events:none;transform:scale(1.15);cursor:grabbing;transition:none}
+  .chip.dark-text{color:var(--navy)}
+  .ld.outline{box-shadow:inset 0 0 0 2px var(--navy)}
+  .chip.outline{box-shadow:inset 0 0 0 2px var(--navy),0 8px 16px -8px rgba(0,0,0,.35)}
+  .chip.shake{animation:shake .45s}
+  @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+  .feedback{border-radius:18px;padding:12px 14px;background:rgba(255,255,255,.85);min-height:92px;font-size:15px;line-height:1.45}
+  .feedback .tag{display:inline-block;font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;margin-bottom:6px}
+  .feedback .tag.good{background:var(--leaf);color:var(--navy)}
+  .feedback .tag.try{background:var(--purple50);color:var(--purple)}
+  .placed{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px;line-height:1.35}
+  .placed li{display:flex;gap:8px;align-items:flex-start;animation:in .4s both}
+  .placed .mini{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff}
+  .bar-row{display:flex;align-items:center;gap:10px}
+  .track{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.8);overflow:hidden}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width .4s}
+  .count{font-size:13px;font-weight:800;white-space:nowrap}
+  .btns{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{height:42px;padding:0 18px;border-radius:999px;font-weight:800;font-size:15px}
+  .btn.primary{color:#fff;background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9)}
+  .btn.soft{background:rgba(255,255,255,.9);color:var(--blue)}
+  .btn.leaf{background:var(--leaf);color:var(--navy)}
+  .btn[hidden]{display:none}
+  .orient{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--blue);opacity:.7;padding:8px 14px 0}
+
+  /* finish */
+  .done-panel{text-align:center;padding:40px 24px}
+  .done-panel h2{font-size:32px}
+  .confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:60;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+  @media (max-width:760px){
+    .learn-grid,.place{grid-template-columns:1fr}
+    .tiles{grid-template-columns:repeat(3,1fr)}
+    .tile{height:96px}
+    .target{width:9%}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="world"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<main class="app">
+  <div class="top">
+    <h1>Trick for Remembering Lead Placement for EKG/ECG</h1>
+    <nav class="steps" aria-label="Activity steps">
+      <button class="step on" data-go="learn">1 · Learn the trick<span class="tick">✓</span></button>
+      <button class="step" data-go="chest">2 · Chest leads<span class="tick">✓</span></button>
+      <button class="step" data-go="limb">3 · Arms &amp; legs<span class="tick">✓</span></button>
+    </nav>
+  </div>
+
+  <!-- ============ STEP 1: LEARN ============ -->
+  <section class="view on" id="learn">
+    <div class="panel facets">
+      <p class="intro">As you saw in the last video, you'll want to think of a mnemonic device that sticks with you to remember the colors and order for 12-lead EKG placement. Here's one you can use, or make up your own:</p>
+      <div class="learn-grid">
+        <div>
+          <span class="kicker">Chest (Precordial) · V1-V6</span>
+          <p class="colors">Red, Yellow, Green, Blue, Orange, Purple</p>
+          <div class="tiles" id="tiles"></div>
+          <p class="phrase" id="phrase">"Rainbows Yield Great Beauty Offering Peace"</p>
+          <span class="acro" id="acro"></span>
+        </div>
+        <div>
+          <span class="kicker">Arms and Legs · RA, RL, LA, LL</span>
+          <div class="limbs">
+            <div class="pair">
+              <div class="stack"><div class="ld outline" style="background:var(--l-white);color:var(--navy)">RA</div><div class="ld" style="background:var(--l-green)">RL</div></div>
+              <p>clouds over grass<span>(white over green)</span></p>
+            </div>
+            <div class="pair">
+              <div class="stack"><div class="ld" style="background:var(--l-black)">LA</div><div class="ld" style="background:var(--l-red)">LL</div></div>
+              <p>coal over fire<span>(black over red)</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="notes"><em>Important Notes:</em> While relying on color is no longer common practice, this information is tested on the CCMA exam. These represent the most commonly encountered coloring schemes, however, other coloring systems exist. Refer to the device's user manual prior to use.</div>
+      <div class="btns" style="margin-top:14px"><button class="btn primary" data-go="chest">Practice the chest leads ›</button></div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2: CHEST ============ -->
+  <section class="view" id="chest">
+    <div class="place">
+      <div class="board" id="chestBoard">
+        <div class="orient"><span>Patient's right</span><span>Patient's left</span></div>
+        <svg viewBox="0 0 600 470" aria-label="Chest diagram">
+          <defs>
+            <linearGradient id="torso" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DEEBFF"/><stop offset="1" stop-color="#F0E6FF"/></linearGradient>
+          </defs>
+          <!-- torso -->
+          <path d="M120 40 C 190 18, 250 14, 300 14 C 350 14, 410 18, 480 40 C 540 58, 575 90, 585 150 L 590 470 L 10 470 L 15 150 C 25 90, 60 58, 120 40 Z" fill="url(#torso)"/>
+          <!-- ribs (white), both sides -->
+          <g fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" opacity=".95" id="ribs"></g>
+          <!-- sternum -->
+          <rect x="278" y="60" width="44" height="290" rx="20" fill="#FFFFFF" stroke="#B9CCF5" stroke-width="2"/>
+          <!-- reference lines on patient's left -->
+          <g stroke="#7E43D0" stroke-width="2" stroke-dasharray="6 7" opacity=".55">
+            <line x1="400" y1="60" x2="400" y2="455"/>
+            <line x1="480" y1="90" x2="480" y2="455"/>
+            <line x1="550" y1="120" x2="550" y2="455"/>
+          </g>
+          <g font-size="12" font-weight="700" fill="#7E43D0" text-anchor="middle">
+            <text x="400" y="464">midclavicular</text>
+            <text x="476" y="446">anterior axillary</text>
+            <text x="552" y="464">midaxillary</text>
+          </g>
+          <!-- intercostal space numbers on patient's right -->
+          <g font-size="12" font-weight="800" fill="#0455F6" text-anchor="middle" id="ics"></g>
+        </svg>
+      </div>
+      <div class="side">
+        <div><span class="kicker">Chest (Precordial) · V1-V6</span>
+        <h2>Place the chest leads</h2>
+        <p class="sub" style="margin:0">Drag each lead to its spot, or tap a lead then tap a spot.</p></div>
+        <div class="bar-row"><div class="track"><div class="fill" id="chestFill"></div></div><span class="count" id="chestCount">0 of 6</span></div>
+        <div class="tray" id="chestTray"></div>
+        <div class="feedback" id="chestFb"><ul class="placed" id="chestList"></ul></div>
+        <div class="btns"><button class="btn soft" data-reset="chest">Reset</button><button class="btn leaf" id="chestNext" data-go="limb" hidden>Next: arms &amp; legs ›</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STEP 3: LIMBS ============ -->
+  <section class="view" id="limb">
+    <div class="place">
+      <div class="board" id="limbBoard">
+        <div class="orient"><span>Patient's right</span><span>Patient's left</span></div>
+        <svg viewBox="0 0 600 470" aria-label="Body diagram">
+          <defs><linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DEEBFF"/><stop offset="1" stop-color="#F0E6FF"/></linearGradient></defs>
+          <g fill="url(#body)">
+            <circle cx="300" cy="52" r="34"/>
+            <rect x="288" y="80" width="24" height="20" rx="8"/>
+            <rect x="232" y="94" width="136" height="170" rx="40"/>
+            <rect x="240" y="236" width="120" height="50" rx="22"/>
+            <!-- arms -->
+            <rect x="196" y="104" width="38" height="190" rx="19" transform="rotate(14 215 104)"/>
+            <rect x="366" y="104" width="38" height="190" rx="19" transform="rotate(-14 385 104)"/>
+            <!-- legs -->
+            <rect x="246" y="262" width="48" height="196" rx="22"/>
+            <rect x="306" y="262" width="48" height="196" rx="22"/>
+          </g>
+          <line x1="300" y1="280" x2="300" y2="455" stroke="#FFFFFF" stroke-width="6"/>
+        </svg>
+      </div>
+      <div class="side">
+        <div><span class="kicker">Arms and Legs · RA, RL, LA, LL</span>
+        <h2>Place the limb leads</h2>
+        <p class="sub" style="margin:0">Drag each lead to its spot, or tap a lead then tap a spot.</p></div>
+        <div class="bar-row"><div class="track"><div class="fill" id="limbFill"></div></div><span class="count" id="limbCount">0 of 4</span></div>
+        <div class="tray" id="limbTray"></div>
+        <div class="feedback" id="limbFb"><ul class="placed" id="limbList"></ul></div>
+        <div class="btns"><button class="btn soft" data-reset="limb">Reset</button><button class="btn leaf" id="limbNext" hidden>Finish ›</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINISH ============ -->
+  <section class="view" id="finish">
+    <div class="panel facets done-panel">
+      <span class="kicker">RYGBOP</span>
+      <h2>All 10 leads placed</h2>
+      <p class="phrase" style="margin:10px 0 18px">"Rainbows Yield Great Beauty Offering Peace"</p>
+      <div class="btns" style="justify-content:center"><button class="btn primary" id="again">Practice again</button><button class="btn soft" data-go="learn">Review the trick</button></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ===================== CONTENT (word for word) ===================== */
+const CHEST = [
+  {id:"V1", color:"--l-red",    word:"Rainbows", desc:"4<sup>th</sup> intercostal space to the right of the sternum", x:258, y:247},
+  {id:"V2", color:"--l-yellow", word:"Yield",    desc:"4<sup>th</sup> intercostal space to the left of the sternum",  x:342, y:247},
+  {id:"V3", color:"--l-green",  word:"Great",    desc:"directly between the leads V<sub>2</sub> &amp; V<sub>4</sub>", x:371, y:270},
+  {id:"V4", color:"--l-blue",   word:"Beauty",   desc:"5<sup>th</sup> intercostal space at midclavicular line",      x:400, y:294},
+  {id:"V5", color:"--l-orange", word:"Offering", desc:"midway between V<sub>4</sub> &amp; V<sub>6</sub>, left anterior axillary line", x:480, y:294},
+  {id:"V6", color:"--l-purple", word:"Peace",    desc:"level with V<sub>5</sub> at left midaxillary line <em>(directly under the midpoint of the armpit)</em>", x:550, y:294},
+];
+const LIMB = [
+  {id:"RA", color:"--l-white", desc:"Right Arm", x:178, y:282},
+  {id:"LA", color:"--l-black", desc:"Left Arm",  x:422, y:282},
+  {id:"RL", color:"--l-green", desc:"Right Leg", x:270, y:430},
+  {id:"LL", color:"--l-red",   desc:"Left Leg",  x:330, y:430},
+];
+const VB = {w:600, h:470};   // svg viewBox (both boards)
+
+/* ===================== STEP NAV ===================== */
+const $ = s => document.querySelector(s);
+const done = {chest:false, limb:false};
+function go(view){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on", v.id===view));
+  document.querySelectorAll(".step").forEach(b=>b.classList.toggle("on", b.dataset.go===view));
+  window.scrollTo({top:0,behavior:"smooth"});
+  requestAnimationFrame(()=>{ positionTargets("chest"); positionTargets("limb"); });
+}
+document.addEventListener("click", e=>{
+  const g = e.target.closest("[data-go]"); if(g) go(g.dataset.go);
+  const r = e.target.closest("[data-reset]"); if(r) setup(r.dataset.reset);
+});
+
+/* ===================== STEP 1: tiles ===================== */
+const textOn = c => (c==="--l-yellow"||c==="--l-white") ? "var(--navy)" : "#fff";
+const tiles = $("#tiles");
+CHEST.forEach((l,i)=>{
+  const t=document.createElement("button"); t.className="tile"; t.setAttribute("aria-label",`${l.id}, tap to reveal`);
+  t.innerHTML=`<div class="in">
+      <div class="f"><div class="dot" style="background:var(${l.color});color:${textOn(l.color)}">${l.word[0]}</div><small>${l.id}</small></div>
+      <div class="b" style="background:var(${l.color});color:${textOn(l.color)}"><strong>${l.word}</strong><span>${l.id}</span></div>
+    </div>`;
+  t.onclick=()=>{ t.classList.toggle("flip"); updateAcro(); };
+  tiles.appendChild(t);
+});
+function updateAcro(){
+  const flipped=[...tiles.children].map((t,i)=>t.classList.contains("flip")?CHEST[i].word[0]:"·");
+  $("#acro").innerHTML = flipped.map((ch,i)=>`<span style="color:var(${CHEST[i].color});${CHEST[i].color==="--l-yellow"?"-webkit-text-stroke:1px #0B2540;":""}">${ch}</span>`).join("");
+  if(!flipped.includes("·")) $("#acro").animate([{transform:"scale(1)"},{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:500});
+}
+updateAcro();
+
+/* ===================== CHEST DIAGRAM DRAWING ===================== */
+(function drawChest(){
+  const ribs=$("#ribs"), ics=$("#ics");
+  // rib lines at these y values; intercostal spaces sit between them
+  const ys=[100,148,188,228,268,308,348];
+  let p="";
+  ys.forEach((y,i)=>{
+    const drop=24+i*6;
+    p+=`<path d="M322 ${y} C 400 ${y-6}, 500 ${y+drop*0.6}, 588 ${y+drop+30}"/>`;
+    p+=`<path d="M278 ${y} C 200 ${y-6}, 100 ${y+drop*0.6}, 12 ${y+drop+30}"/>`;
+  });
+  ribs.innerHTML=p;
+  // label spaces 1st–6th on patient's right, beside the sternum
+  const labelY=[124,169,209,250,290,331]; // midpoint of each space, measured where the labels sit
+  ["1st","2nd","3rd","4th","5th","6th"].forEach((t,i)=>{
+    const y=labelY[i]+4;
+    ics.innerHTML+=`<text x="222" y="${y}">${t}</text>`;
+  });
+})();
+
+/* ===================== PLACEMENT LOGIC ===================== */
+const SETS={chest:CHEST, limb:LIMB};
+const state={chest:new Set(), limb:new Set()};
+let selected=null;
+
+function chipEl(l){
+  const c=document.createElement("div");
+  c.className="chip"+(l.color==="--l-yellow"||l.color==="--l-white"?" dark-text":"")+(l.color==="--l-white"?" outline":"");
+  c.style.background=`var(${l.color})`; c.textContent=l.id; c.dataset.id=l.id; c.tabIndex=0;
+  c.setAttribute("role","button"); c.setAttribute("aria-label",`Lead ${l.id}`);
+  return c;
+}
+
+function setup(kind){
+  const set=SETS[kind], board=$(`#${kind}Board`), tray=$(`#${kind}Tray`);
+  state[kind].clear(); done[kind]=false; selected=null;
+  board.querySelectorAll(".target").forEach(t=>t.remove());
+  tray.innerHTML=""; $(`#${kind}List`).innerHTML=""; $(`#${kind}Next`).hidden=true;
+  document.querySelector(`.step[data-go="${kind}"]`).classList.remove("done");
+  progress(kind);
+  const svg=board.querySelector("svg");
+  set.forEach(l=>{
+    const t=document.createElement("div"); t.className="target"+(kind==="limb"?" limb":""); t.dataset.id=l.id;
+    t.style.left=(l.x/VB.w*100)+"%";
+    t.dataset.x=l.x; t.dataset.y=l.y;
+    t.onclick=()=>{ if(selected) tryPlace(kind, selected, t); };
+    board.appendChild(t);
+  });
+  positionTargets(kind);
+  // shuffle tray order so it's a real challenge
+  [...set].sort(()=>Math.random()-.5).forEach(l=>{ const c=chipEl(l); wireChip(kind,c); tray.appendChild(c); });
+}
+
+function positionTargets(kind){
+  const board=$(`#${kind}Board`), svg=board.querySelector("svg");
+  const sr=svg.getBoundingClientRect(), br=board.getBoundingClientRect();
+  if(!sr.height) return;
+  const top=sr.top-br.top, h=sr.height;
+  board.querySelectorAll(".target").forEach(t=>{ t.style.top=(top + (+t.dataset.y/VB.h)*h)+"px"; });
+}
+window.addEventListener("resize",()=>{ positionTargets("chest"); positionTargets("limb"); });
+
+function progress(kind){
+  const n=state[kind].size, total=SETS[kind].length;
+  $(`#${kind}Fill`).style.width=(n/total*100)+"%";
+  $(`#${kind}Count`).textContent=`${n} of ${total}`;
+}
+
+function feedback(kind, html){
+  const fb=$(`#${kind}Fb`); let note=fb.querySelector(".note");
+  if(!note){ note=document.createElement("div"); note.className="note"; fb.prepend(note); }
+  note.innerHTML=html;
+}
+
+function tryPlace(kind, chip, target){
+  const l=SETS[kind].find(x=>x.id===chip.dataset.id);
+  if(target.dataset.id===l.id){
+    state[kind].add(l.id);
+    target.classList.add("ok"); target.onclick=null;
+    const placed=chipEl(l); placed.style.cursor="default"; target.appendChild(placed);
+    chip.remove(); selected=null;
+    feedback(kind, "");
+    const li=document.createElement("li");
+    li.innerHTML=`<span class="mini" style="background:var(${l.color});color:${textOn(l.color)};${l.color==="--l-white"?"box-shadow:inset 0 0 0 1.5px #0B2540;":""}">${l.id}</span><span>${l.desc}</span>`;
+    $(`#${kind}List`).prepend(li);
+    progress(kind);
+    if(state[kind].size===SETS[kind].length) complete(kind);
+  } else {
+    chip.classList.remove("shake"); void chip.offsetWidth; chip.classList.add("shake");
+    feedback(kind, `<span class="tag try">Not quite</span><div><b>${l.id}:</b> ${l.desc}</div>`);
+    selectChip(null);
+  }
+}
+
+function complete(kind){
+  done[kind]=true;
+  document.querySelector(`.step[data-go="${kind}"]`).classList.add("done");
+  feedback(kind, `<span class="tag good">All placed!</span>`);
+  $(`#${kind}Next`).hidden=false;
+  burst(30);
+}
+
+function selectChip(c){
+  document.querySelectorAll(".chip.sel").forEach(x=>x.classList.remove("sel"));
+  selected=c; if(c) c.classList.add("sel");
+}
+
+/* drag with pointer events (mouse + touch), tap-to-select fallback */
+function wireChip(kind, chip){
+  let start=null, ghost=null, hot=null;
+  chip.addEventListener("pointerdown", e=>{
+    e.preventDefault(); chip.setPointerCapture(e.pointerId);
+    start={x:e.clientX,y:e.clientY,moved:false};
+  });
+  chip.addEventListener("pointermove", e=>{
+    if(!start) return;
+    if(!start.moved && Math.hypot(e.clientX-start.x,e.clientY-start.y)<6) return;
+    if(!start.moved){ start.moved=true; ghost=chip.cloneNode(true); ghost.classList.add("drag"); document.body.appendChild(ghost); chip.style.opacity=".25"; }
+    ghost.style.left=(e.clientX-24)+"px"; ghost.style.top=(e.clientY-24)+"px";
+    const t=targetAt(kind,e.clientX,e.clientY);
+    if(t!==hot){ hot&&hot.classList.remove("hot"); hot=t; hot&&hot.classList.add("hot"); }
+  });
+  const end=e=>{
+    if(!start) return;
+    if(start.moved){
+      ghost.remove(); chip.style.opacity="";
+      hot&&hot.classList.remove("hot");
+      if(hot) tryPlace(kind, chip, hot);
+      hot=null;
+    } else {
+      selectChip(selected===chip?null:chip);
+    }
+    start=null;
+  };
+  chip.addEventListener("pointerup", end);
+  chip.addEventListener("pointercancel", e=>{ if(ghost) ghost.remove(); chip.style.opacity=""; start=null; });
+  chip.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectChip(chip); } });
+}
+
+function targetAt(kind,x,y){
+  let best=null, bd=Infinity;
+  $(`#${kind}Board`).querySelectorAll(".target:not(.ok)").forEach(t=>{
+    const r=t.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, d=Math.hypot(x-cx,y-cy);
+    if(d<Math.max(r.width*0.9,30) && d<bd){ bd=d; best=t; }
+  });
+  return best;
+}
+
+/* ===================== FINISH ===================== */
+$("#limbNext").onclick=()=>{ go("finish"); burst(80); };
+$("#again").onclick=()=>{ setup("chest"); setup("limb"); go("chest"); };
+
+function burst(n){
+  const cols=["#C3F570","#0455F6","#7E43D0","#E03A3A","#F5D90A","#3DAA4A","#F08A1C"];
+  for(let i=0;i<n;i++){
+    const p=document.createElement("i"); p.className="confetti";
+    p.style.left=Math.random()*100+"vw"; p.style.background=cols[i%cols.length];
+    p.style.animationDuration=(2+Math.random()*2)+"s"; p.style.animationDelay=(Math.random()*.5)+"s";
+    document.body.appendChild(p); setTimeout(()=>p.remove(),4800);
+  }
+}
+
+/* boards need layout before targets can be positioned */
+document.querySelectorAll('[data-go="chest"],[data-go="limb"]').forEach(b=>b.addEventListener("click",()=>requestAnimationFrame(()=>{positionTargets("chest");positionTargets("limb");})));
+setup("chest"); setup("limb");
+</script>
+</body>
+</html>
