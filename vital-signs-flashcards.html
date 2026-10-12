@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vital Signs &amp; Body Measurements Flashcards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --blue:#0455F6; --blue75:#DEEBFF;
@@ -14,6 +17,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
   body{
+    font-family:"Manrope","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
     color:var(--navy);
     background:var(--blue75);
     overflow-x:hidden;
@@ -126,11 +130,11 @@
   .nav:hover:not(:disabled){background:#fff;transform:scale(1.07)}
   .nav:disabled{opacity:.35;cursor:default}
   .nav svg{width:22px;height:22px}
-  .flip-btn{height:52px;padding:0 28px;border-radius:999px;font-weight:800;font-size:16px;color:#fff;background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9);box-shadow:0 12px 24px -12px rgba(4,85,246,.8);transition:transform .2s}
+  .flip-btn{height:52px;padding:0 28px;border-radius:999px;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9);box-shadow:0 12px 24px -12px rgba(4,85,246,.8);transition:transform .2s}
   .flip-btn:hover{transform:translateY(-2px)}
   .rate{display:flex;gap:10px;justify-content:center;margin-top:14px;min-height:46px;opacity:0;transform:translateY(8px);pointer-events:none;transition:all .35s}
   .rate.show{opacity:1;transform:none;pointer-events:auto}
-  .rate button{height:46px;padding:0 20px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .2s}
+  .rate button{height:46px;padding:0 20px;border-radius:999px;font-weight:700;font-size:17px;transition:transform .2s}
   .rate button:hover{transform:translateY(-2px)}
   .learning-btn{background:var(--purple50);color:var(--purple)}
   .known-btn{background:var(--leaf);color:var(--navy)}
