@@ -44,16 +44,17 @@
   .veil{position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.55),rgba(222,235,255,.25) 55%,rgba(240,230,255,.35))}
 
   /* ---------- shell ---------- */
-  .app{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column;padding:22px 20px 26px;max-width:860px;margin:0 auto}
+  .app{position:relative;z-index:1;min-height:100%;display:flex;flex-direction:column;padding:14px 20px 12px;max-width:860px;margin:0 auto}
   .top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
   .deck-title{margin:0;font-size:clamp(18px,2.6vw,24px);font-weight:800;letter-spacing:-.01em;line-height:1.15}
   .deck-sub{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--navy);background:var(--leaf);padding:3px 10px;border-radius:999px}
   .tools{display:flex;gap:8px;flex-shrink:0}
-  .icon-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.7);color:var(--blue);display:grid;place-items:center;transition:transform .2s,background .2s}
+  .icon-btn{min-width:64px;padding:7px 8px 6px;border-radius:14px;background:rgba(255,255,255,.7);color:var(--blue);display:flex;flex-direction:column;align-items:center;gap:3px;transition:transform .2s,background .2s}
+  .icon-btn span{font-size:11px;font-weight:700;line-height:1}
   .icon-btn:hover{background:#fff;transform:translateY(-2px)}
   .icon-btn svg{width:20px;height:20px}
 
-  .progress{margin-top:18px;display:flex;align-items:center;gap:12px}
+  .progress{margin-top:12px;display:flex;align-items:center;gap:12px}
   .track{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.65);overflow:hidden}
   .bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .5s cubic-bezier(.2,.8,.2,1)}
   .count{font-size:14px;font-weight:700;min-width:64px;text-align:right}
@@ -64,8 +65,8 @@
   .dot.learning{background:var(--purple)}
 
   /* topic banner */
-  .topic{margin:22px 0 12px;height:38px;position:relative}
-  .topic span{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:10px;font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--blue);letter-spacing:-.01em}
+  .topic{margin:12px 0 6px;height:34px;position:relative}
+  .topic span{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:10px;font-size:clamp(19px,2.6vw,24px);font-weight:800;color:var(--blue);letter-spacing:-.01em}
   .topic span::before{content:"";width:12px;height:12px;border-radius:4px;background:var(--leaf);box-shadow:0 0 0 4px rgba(195,245,112,.35)}
   .topic span.in{animation:topicIn .7s cubic-bezier(.2,.8,.2,1) both}
   @keyframes topicIn{from{opacity:0;transform:translateX(-24px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
@@ -75,7 +76,7 @@
   .card{perspective:1600px;outline:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .inner{display:grid;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,1.35,.45,1)}
   .card.flipped .inner{transform:rotateY(180deg)}
-  .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:28px;position:relative;overflow:hidden;min-height:340px;display:flex;flex-direction:column;padding:26px 30px 30px}
+  .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:28px;position:relative;overflow:hidden;min-height:260px;display:flex;flex-direction:column;padding:18px 26px 20px}
   .front{
     background:
       linear-gradient(115deg,transparent 0 58%,rgba(255,255,255,.95) 58% 58.4%,rgba(222,235,255,.55) 58.4% 100%),
@@ -95,11 +96,11 @@
   .front .side b{background:var(--blue75);color:var(--blue)}
   .back .side b{background:rgba(255,255,255,.16);color:#fff}
   .hint{opacity:.6;font-weight:600}
-  .body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;position:relative;z-index:2;padding:18px 4px 64px}
+  .body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;position:relative;z-index:2;padding:10px 4px 30px}
   .label{align-self:center;background:var(--leaf);color:var(--blue);font-weight:800;font-size:clamp(17px,2.4vw,24px);padding:2px 10px}
   .back .label{color:var(--navy)}
-  .line{margin:0;text-align:center;font-weight:700;font-size:clamp(20px,3vw,30px);line-height:1.32;text-wrap:balance}
-  .line.big{font-size:clamp(34px,6vw,58px);font-weight:800;letter-spacing:-.01em}
+  .line{margin:0;text-align:center;font-weight:700;font-size:clamp(18px,2.6vw,26px);line-height:1.3;text-wrap:balance}
+  .line.big{font-size:clamp(32px,5.4vw,52px);font-weight:800;letter-spacing:-.01em}
   .blank{display:inline-block;min-width:3.2em;height:.95em;vertical-align:-.12em;border-bottom:4px solid var(--navy);position:relative;overflow:hidden}
   .blank::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:linear-gradient(90deg,transparent,var(--purple),transparent);animation:scan 2.2s ease-in-out infinite}
   @keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
@@ -115,8 +116,6 @@
 
   /* bottom-right line motifs on the back */
   .motif{position:absolute;right:16px;bottom:14px;width:96px;height:81px;z-index:1;opacity:.55;pointer-events:none}
-  /* front corner glyph (topic icon) */
-  .glyph{position:absolute;right:18px;bottom:16px;width:52px;height:52px;z-index:1;opacity:.9}
 
   /* entrance when card changes */
   .card.enter-next{animation:enterNext .55s cubic-bezier(.2,.8,.2,1)}
@@ -125,20 +124,20 @@
   @keyframes enterPrev{from{opacity:0;transform:translateX(-60px) rotate(-2deg)}to{opacity:1;transform:none}}
 
   /* ---------- controls ---------- */
-  .controls{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-  .nav{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.75);color:var(--blue);display:grid;place-items:center;transition:transform .2s,background .2s}
+  .controls{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+  .nav{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.75);color:var(--blue);display:grid;place-items:center;transition:transform .2s,background .2s}
   .nav:hover:not(:disabled){background:#fff;transform:scale(1.07)}
   .nav:disabled{opacity:.35;cursor:default}
   .nav svg{width:22px;height:22px}
-  .flip-btn{height:52px;padding:0 28px;border-radius:999px;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9);box-shadow:0 12px 24px -12px rgba(4,85,246,.8);transition:transform .2s}
+  .flip-btn{height:46px;padding:0 28px;border-radius:999px;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,#3A78FA,var(--blue) 60%,#3D3FD9);box-shadow:0 12px 24px -12px rgba(4,85,246,.8);transition:transform .2s}
   .flip-btn:hover{transform:translateY(-2px)}
-  .rate{display:flex;gap:10px;justify-content:center;margin-top:14px;min-height:46px;opacity:0;transform:translateY(8px);pointer-events:none;transition:all .35s}
+  .rate{display:flex;gap:10px;justify-content:center;margin-top:10px;min-height:46px;opacity:0;transform:translateY(8px);pointer-events:none;transition:all .35s}
   .rate.show{opacity:1;transform:none;pointer-events:auto}
   .rate button{height:46px;padding:0 20px;border-radius:999px;font-weight:700;font-size:17px;transition:transform .2s}
   .rate button:hover{transform:translateY(-2px)}
   .learning-btn{background:var(--purple50);color:var(--purple)}
   .known-btn{background:var(--leaf);color:var(--navy)}
-  .keys{text-align:center;margin-top:12px;font-size:12px;opacity:.6}
+  .keys{text-align:center;margin-top:8px;font-size:12px;opacity:.6}
 
   /* ---------- intro & finish screens ---------- */
   .screen{position:fixed;inset:0;z-index:5;background:rgba(222,235,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;transition:opacity .6s,visibility .6s}
@@ -194,9 +193,11 @@
     <div class="tools">
       <button class="icon-btn" id="shuffleBtn" title="Shuffle" aria-label="Shuffle cards">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        <span>Shuffle</span>
       </button>
       <button class="icon-btn" id="restartBtn" title="Start over" aria-label="Start over">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Start over</span>
       </button>
     </div>
   </div>
@@ -364,13 +365,6 @@ const THEMES = {
     </svg>`
 };
 
-/* small front-corner glyphs, one per theme */
-const GLYPHS = {
-  scale:`<svg class="glyph" viewBox="0 0 64 64" fill="none" stroke="#0455F6" stroke-width="2"><rect x="6" y="14" width="52" height="42" rx="12" fill="#DEEBFF"/><path d="M18 30a14 14 0 0 1 28 0"/><path d="M32 30l6-8" stroke="#7E43D0" stroke-width="3" stroke-linecap="round"/></svg>`,
-  growth:`<svg class="glyph" viewBox="0 0 64 64" fill="none" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="4" width="56" height="56" rx="14" fill="#F0E6FF" stroke="none"/><path d="M12 50 C 24 46, 32 34, 52 14" stroke="#7E43D0"/><path d="M12 54 C 26 52, 36 42, 52 26" stroke="#0455F6"/><circle cx="34" cy="34" r="3.5" fill="#C3F570" stroke="#0455F6" stroke-width="1.5"/></svg>`,
-  thermo:`<svg class="glyph" viewBox="0 0 64 64" fill="none" stroke="#0455F6" stroke-width="2"><rect x="4" y="4" width="56" height="56" rx="14" fill="#DEEBFF" stroke="none"/><rect x="27" y="10" width="10" height="32" rx="5"/><circle cx="32" cy="47" r="8"/><rect x="30" y="24" width="4" height="20" rx="2" fill="#7E43D0" stroke="none"/><circle cx="32" cy="47" r="5" fill="#7E43D0" stroke="none"/></svg>`
-};
-
 /* fine-line white motifs for the card backs (rotate as a set) */
 const MOTIFS = [
   `<svg class="motif" viewBox="0 0 130 110" fill="none" stroke="#fff" stroke-width="1.2">${[0,1,2,3,4,5].map(i=>`<line x1="${10+i*22}" y1="0" x2="${10+i*22}" y2="110"/><line x1="0" y1="${10+i*20}" x2="130" y2="${10+i*20}"/>`).join("")}<rect x="54" y="50" width="22" height="20" fill="#fff" stroke="none"/><rect x="98" y="90" width="22" height="20" fill="#C3F570" stroke="none"/></svg>`,
@@ -414,7 +408,7 @@ function faceHTML(c, mode, idx){
       ${lines}
       ${mode==="back"&&c.example?`<p class="example">${c.example}</p>`:""}
     </div>
-    ${mode==="front"?GLYPHS[c.theme]||"":MOTIFS[idx%MOTIFS.length]}`;
+    ${mode==="back"?MOTIFS[idx%MOTIFS.length]:""}`;
 }
 
 function render(dir){
