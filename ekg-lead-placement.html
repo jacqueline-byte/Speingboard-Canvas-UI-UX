@@ -16,7 +16,7 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{font-family:"Manrope","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--navy);background:var(--blue75);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body{font-family:"Manrope","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--navy);background:transparent;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   button{font:inherit;cursor:pointer;border:0}
   button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
   sub{font-size:.7em}
@@ -59,6 +59,11 @@
   .tile{perspective:800px;height:118px;background:none;padding:0}
   .tile .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,1.35,.45,1)}
   .tile.flip .in{transform:rotateY(180deg)}
+  .colors-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .tap-hint{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:var(--purple);background:var(--purple50);padding:4px 10px;border-radius:999px;transition:opacity .4s}
+  .tap-hint.gone{opacity:0}
+  .tap-hint i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--purple);animation:ping 1.4s ease-out infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(126,67,208,.55)}100%{box-shadow:0 0 0 8px rgba(126,67,208,0)}}
   .tile .f,.tile .b{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
   .tile .f{background:#fff;box-shadow:inset 0 0 0 1px var(--gray)}
   .tile .f .dot{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;box-shadow:0 6px 14px -6px rgba(0,0,0,.35)}
@@ -76,8 +81,8 @@
   .ld{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
   .pair p{margin:0;font-size:16px;font-weight:700;line-height:1.35}
   .pair p span{display:block;font-size:14px;font-weight:600;opacity:.75}
-  .notes{margin-top:14px;border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,#3A78FA 0%,var(--blue) 50%,var(--purple) 130%);color:#fff;font-size:15px;line-height:1.5}
-  .notes em{font-weight:700}
+  .notes{margin-top:14px;border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,var(--blue75) 0%,var(--purple50) 100%);color:var(--navy);font-size:15px;line-height:1.5}
+  .notes em{font-weight:800;color:var(--purple)}
 
   /* ---- placement boards ---- */
   .place{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
@@ -122,6 +127,12 @@
   /* finish */
   .done-panel{text-align:center;padding:40px 24px}
   .done-panel h2{font-size:32px}
+  .status{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 0 18px}
+  .srow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;font-size:15px;font-weight:700}
+  .spill{display:inline-block;padding:3px 12px;border-radius:999px;font-size:13px;font-weight:800}
+  .spill.ok{background:var(--leaf);color:var(--navy)}
+  .spill.pending{background:var(--purple50);color:var(--purple)}
+  .slink{background:none;padding:0;color:var(--blue);font-weight:800;font-size:14px;text-decoration:underline;text-underline-offset:3px}
   .confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:60;pointer-events:none;animation:fall linear forwards}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 
@@ -135,7 +146,6 @@
 </style>
 </head>
 <body>
-<div class="world"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
 <main class="app">
   <div class="top">
@@ -154,7 +164,7 @@
       <div class="learn-grid">
         <div>
           <span class="kicker">Chest (Precordial) · V1-V6</span>
-          <p class="colors">Red, Yellow, Green, Blue, Orange, Purple</p>
+          <div class="colors-row"><p class="colors">Red, Yellow, Green, Blue, Orange, Purple</p><span class="tap-hint" id="tapHint"><i></i>Tap a color to reveal its word</span></div>
           <div class="tiles" id="tiles"></div>
           <p class="phrase" id="phrase">"Rainbows Yield Great Beauty Offering Peace"</p>
           <span class="acro" id="acro"></span>
@@ -215,7 +225,7 @@
         <div class="bar-row"><div class="track"><div class="fill" id="chestFill"></div></div><span class="count" id="chestCount">0 of 6</span></div>
         <div class="tray" id="chestTray"></div>
         <div class="feedback" id="chestFb"><ul class="placed" id="chestList"></ul></div>
-        <div class="btns"><button class="btn soft" data-reset="chest">Reset</button><button class="btn leaf" id="chestNext" data-go="limb" hidden>Next: arms &amp; legs ›</button></div>
+        <div class="btns"><button class="btn soft" data-reset="chest">Reset</button><button class="btn leaf" id="chestNext">Next: arms &amp; legs ›</button></div>
       </div>
     </div>
   </section>
@@ -249,7 +259,7 @@
         <div class="bar-row"><div class="track"><div class="fill" id="limbFill"></div></div><span class="count" id="limbCount">0 of 4</span></div>
         <div class="tray" id="limbTray"></div>
         <div class="feedback" id="limbFb"><ul class="placed" id="limbList"></ul></div>
-        <div class="btns"><button class="btn soft" data-reset="limb">Reset</button><button class="btn leaf" id="limbNext" hidden>Finish ›</button></div>
+        <div class="btns"><button class="btn soft" data-reset="limb">Reset</button><button class="btn leaf" id="limbNext">Finish ›</button></div>
       </div>
     </div>
   </section>
@@ -258,8 +268,9 @@
   <section class="view" id="finish">
     <div class="panel facets done-panel">
       <span class="kicker">RYGBOP</span>
-      <h2>All 10 leads placed</h2>
-      <p class="phrase" style="margin:10px 0 18px">"Rainbows Yield Great Beauty Offering Peace"</p>
+      <h2 id="finishTitle">All 10 leads placed</h2>
+      <p class="phrase" style="margin:10px 0 14px">"Rainbows Yield Great Beauty Offering Peace"</p>
+      <div class="status" id="finishStatus"></div>
       <div class="btns" style="justify-content:center"><button class="btn primary" id="again">Practice again</button><button class="btn soft" data-go="learn">Review the trick</button></div>
     </div>
   </section>
@@ -313,6 +324,7 @@ CHEST.forEach((l,i)=>{
 function updateAcro(){
   const flipped=[...tiles.children].map((t,i)=>t.classList.contains("flip")?CHEST[i].word[0]:"·");
   $("#acro").innerHTML = flipped.map((ch,i)=>`<span style="color:var(${CHEST[i].color});${CHEST[i].color==="--l-yellow"?"-webkit-text-stroke:1px #0B2540;":""}">${ch}</span>`).join("");
+  const hint=document.getElementById("tapHint"); if(hint) hint.classList.toggle("gone", !flipped.includes("·"));
   if(!flipped.includes("·")) $("#acro").animate([{transform:"scale(1)"},{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:500});
 }
 updateAcro();
@@ -355,7 +367,7 @@ function setup(kind){
   endDrag(false); clearGhosts();
   state[kind].clear(); done[kind]=false; selected=null;
   board.querySelectorAll(".target").forEach(t=>t.remove());
-  tray.innerHTML=""; $(`#${kind}List`).innerHTML=""; $(`#${kind}Next`).hidden=true;
+  tray.innerHTML=""; $(`#${kind}List`).innerHTML=""; 
   document.querySelector(`.step[data-go="${kind}"]`).classList.remove("done");
   progress(kind);
   const svg=board.querySelector("svg");
@@ -380,7 +392,9 @@ function positionTargets(kind){
 }
 window.addEventListener("resize",()=>{ positionTargets("chest"); positionTargets("limb"); });
 
+function syncChestBtn(){ const b=$("#chestNext"); if(b) b.innerHTML = done.limb ? "Finish ›" : "Next: arms &amp; legs ›"; }
 function progress(kind){
+  syncChestBtn();
   const n=state[kind].size, total=SETS[kind].length;
   $(`#${kind}Fill`).style.width=(n/total*100)+"%";
   $(`#${kind}Count`).textContent=`${n} of ${total}`;
@@ -413,10 +427,9 @@ function tryPlace(kind, chip, target){
 }
 
 function complete(kind){
-  done[kind]=true;
+  done[kind]=true; syncChestBtn();
   document.querySelector(`.step[data-go="${kind}"]`).classList.add("done");
   feedback(kind, `<span class="tag good">All placed!</span>`);
-  $(`#${kind}Next`).hidden=false;
   burst(30);
 }
 
@@ -484,7 +497,17 @@ function targetAt(kind,x,y){
 }
 
 /* ===================== FINISH ===================== */
-$("#limbNext").onclick=()=>{ go("finish"); burst(80); };
+function updateFinish(){
+  const c=state.chest.size, l=state.limb.size, all=c===CHEST.length && l===LIMB.length;
+  $("#finishTitle").textContent = all ? "All 10 leads placed" : `${c+l} of 10 leads placed`;
+  const row=(name,n,total,view)=> n===total
+    ? `<div class="srow">${name} <span class="spill ok">Done ✓</span></div>`
+    : `<div class="srow">${name} <span class="spill pending">Pending · ${n} of ${total}</span><button class="slink" data-go="${view}">Finish ${name.toLowerCase()} ›</button></div>`;
+  $("#finishStatus").innerHTML = row("Chest leads",c,CHEST.length,"chest") + row("Limb leads",l,LIMB.length,"limb");
+  return all;
+}
+$("#chestNext").onclick=()=>{ if(done.limb){ const all=updateFinish(); go("finish"); if(all) burst(80); } else go("limb"); };
+$("#limbNext").onclick=()=>{ const all=updateFinish(); go("finish"); if(all) burst(80); };
 $("#again").onclick=()=>{ setup("chest"); setup("limb"); go("chest"); };
 
 function burst(n){
