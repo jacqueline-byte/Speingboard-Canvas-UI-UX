@@ -156,6 +156,15 @@
   .rate button:hover{transform:translateY(-2px)}
   .learning-btn{background:var(--purple50);color:var(--purple)}
   .known-btn{background:var(--leaf);color:var(--navy)}
+  .rate button{display:inline-flex;align-items:center;gap:8px}
+  .count-badge{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;font-size:13px;font-weight:800;line-height:1}
+  .learning-btn .count-badge{background:var(--purple);color:#fff}
+  .known-btn .count-badge{background:var(--navy);color:var(--leaf)}
+  .count-badge.bump{animation:bump .5s cubic-bezier(.3,1.8,.5,1)}
+  @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
+  .fly{position:fixed;z-index:40;pointer-events:none;border-radius:20px;transform-origin:0 0}
+  .fly.known{background:linear-gradient(135deg,var(--leaf),var(--leaf100))}
+  .fly.learning{background:linear-gradient(135deg,var(--purple),#B58BEA)}
   .keys{text-align:center;margin-top:8px;font-size:12px;opacity:.6}
 
   /* ---------- intro & finish screens ---------- */
@@ -247,8 +256,8 @@
       </button>
     </div>
     <div class="rate" id="rate">
-      <button class="learning-btn" id="learnBtn">Still learning</button>
-      <button class="known-btn" id="knowBtn">Got it</button>
+      <button class="learning-btn" id="learnBtn">Still learning <span class="count-badge" id="learnCountBadge">0</span></button>
+      <button class="known-btn" id="knowBtn">Got it <span class="count-badge" id="knowCountBadge">0</span></button>
     </div>
     <div class="keys">Space to flip · ← → to move</div>
   </section>
@@ -517,6 +526,7 @@ function faceHTML(c, mode, idx){
 }
 
 function render(dir){
+  updateBadges();
   const ci = order[pos], c = DECK.cards[ci];
   card.classList.remove("flipped");
   $("rate").classList.remove("show");
@@ -540,6 +550,7 @@ function render(dir){
 }
 
 function flip(){
+  if(typeof rating!=="undefined" && rating) return;   // card is on its way to a bucket
   card.classList.toggle("flipped");
   const on = card.classList.contains("flipped");
   $("rate").classList.toggle("show", on);
@@ -547,7 +558,36 @@ function flip(){
 }
 function next(){ if(pos<order.length-1){pos++;render("next");} else finish(); }
 function prev(){ if(pos>0){pos--;render("prev");} }
-function rate(s){ status[order[pos]]=s; setTimeout(next,250); }
+function updateBadges(){
+  $("knowCountBadge").textContent  = order.filter(k=>status[k]==="known").length;
+  $("learnCountBadge").textContent = order.filter(k=>status[k]==="learning").length;
+}
+let rating=false;
+function rate(s){
+  if(rating) return;                       // ignore double-clicks while a card is flying
+  rating=true;
+  status[order[pos]]=s;
+  const btn = s==="known" ? $("knowBtn") : $("learnBtn");
+  const badge = s==="known" ? $("knowCountBadge") : $("learnCountBadge");
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const done = ()=>{ updateBadges(); badge.classList.remove("bump"); void badge.offsetWidth; badge.classList.add("bump"); };
+  if(reduce || !card.animate){ done(); setTimeout(()=>{ rating=false; next(); },350); return; }
+  const from = card.getBoundingClientRect(), to = badge.getBoundingClientRect();
+  const fly = document.createElement("div");
+  fly.className = "fly "+s;
+  Object.assign(fly.style,{left:from.left+"px",top:from.top+"px",width:from.width+"px",height:from.height+"px"});
+  document.body.appendChild(fly);
+  const sx = 34/from.width, sy = 24/from.height;
+  const dx = to.left + to.width/2 - 17 - from.left, dy = to.top + to.height/2 - 12 - from.top;
+  fly.animate([
+    {transform:"translate(0,0) scale(1,1)", opacity:.85, borderRadius:"20px"},
+    {transform:`translate(${dx*0.6}px,${dy*0.35}px) scale(${Math.max(sx,0.35)},${Math.max(sy,0.35)}) rotate(-6deg)`, opacity:.9, offset:.55},
+    {transform:`translate(${dx}px,${dy}px) scale(${sx},${sy})`, opacity:.95, borderRadius:"60px"}
+  ],{duration:520,easing:"cubic-bezier(.55,0,.3,1)"}).onfinish=()=>{
+    fly.remove(); done();
+    setTimeout(()=>{ rating=false; next(); },220);
+  };
+}
 
 function start(list){
   order = list; pos = 0;
